@@ -1,0 +1,990 @@
+[
+  {
+    "name": "Star Scryer",
+    "type": "caster",
+    "x": 49.4,
+    "y": 85.7,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Vindicator",
+    "type": "melee",
+    "x": 49.5,
+    "y": 85.1,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 49.8,
+    "y": 84.7,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 50.4,
+    "y": 84.5,
+    "notes": ""
+  },
+  {
+    "name": "Astromancer",
+    "type": "caster",
+    "x": 50.7,
+    "y": 85,
+    "notes": ""
+  },
+  {
+    "name": "Star Scryer",
+    "type": "caster",
+    "x": 50.9,
+    "y": 85.7,
+    "notes": ""
+  },
+  {
+    "name": "Astromancer",
+    "type": "caster",
+    "x": 49.7,
+    "y": 79,
+    "notes": ""
+  },
+  {
+    "name": "Astromancer",
+    "type": "caster",
+    "x": 49.7,
+    "y": 79.8,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 49.5,
+    "y": 80.7,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 50.9,
+    "y": 80.6,
+    "notes": ""
+  },
+  {
+    "name": "Star Scryer",
+    "type": "caster",
+    "x": 50.8,
+    "y": 78.9,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Vindicator",
+    "type": "melee",
+    "x": 50.7,
+    "y": 79.7,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Marshal",
+    "type": "melee",
+    "x": 50.1,
+    "y": 77.1,
+    "notes": "Patrol"
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 49.6,
+    "y": 77,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 50.7,
+    "y": 76.9,
+    "notes": ""
+  },
+  {
+    "name": "Star Scryer",
+    "type": "caster",
+    "x": 49.2,
+    "y": 73.1,
+    "notes": ""
+  },
+  {
+    "name": "Star Scryer",
+    "type": "caster",
+    "x": 51,
+    "y": 72.9,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Vindicator",
+    "type": "melee",
+    "x": 49.5,
+    "y": 72.5,
+    "notes": ""
+  },
+  {
+    "name": "Astromancer",
+    "type": "caster",
+    "x": 50.8,
+    "y": 72.2,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 49.8,
+    "y": 71.9,
+    "notes": ""
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 50.3,
+    "y": 71.7,
+    "notes": ""
+  },
+  {
+    "name": "Tempest Falconer",
+    "type": "caster",
+    "x": 47.1,
+    "y": 55.6,
+    "notes": ""
+  },
+  {
+    "name": "Tempest Falconer",
+    "type": "caster",
+    "x": 47.3,
+    "y": 59.2,
+    "notes": ""
+  },
+  {
+    "name": "Tempest Falconer",
+    "type": "caster",
+    "x": 51.6,
+    "y": 54.8,
+    "notes": ""
+  },
+  {
+    "name": "Tempest Falconer",
+    "type": "caster",
+    "x": 52.2,
+    "y": 58.2,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 46.9,
+    "y": 56.8,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 47.5,
+    "y": 56.7,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 47.9,
+    "y": 55.7,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 47.7,
+    "y": 54.8,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 47.1,
+    "y": 54.7,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 46.5,
+    "y": 55.6,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 51.6,
+    "y": 58.2,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 51.9,
+    "y": 57.2,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 52.6,
+    "y": 57.6,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 52.9,
+    "y": 58.6,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 52.6,
+    "y": 59.4,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk Hatchling",
+    "type": "melee",
+    "x": 51.8,
+    "y": 59.1,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk",
+    "type": "melee",
+    "x": 46,
+    "y": 65.6,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk",
+    "type": "melee",
+    "x": 44.4,
+    "y": 56,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk",
+    "type": "melee",
+    "x": 54.7,
+    "y": 52.5,
+    "notes": ""
+  },
+  {
+    "name": "Phoenix-Hawk",
+    "type": "melee",
+    "x": 55.9,
+    "y": 61.9,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Al'ar",
+    "type": "boss",
+    "x": 49.7,
+    "y": 58.6,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Void Reaver",
+    "type": "boss",
+    "x": 26.24750499001996,
+    "y": 48.65269461077844,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "High Astromancer Solarian",
+    "type": "boss",
+    "x": 73.80239520958084,
+    "y": 48.50299401197605,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Kael'thas Sunstrider",
+    "type": "boss",
+    "x": 50.0249500998004,
+    "y": 14.708083832335328,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Astromancer Lord",
+    "type": "caster",
+    "x": 55.489021956087825,
+    "y": 44.98502994011976,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 54.740518962075846,
+    "y": 44.38622754491018,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 56.03792415169661,
+    "y": 45.65868263473054,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 58.63273453093812,
+    "y": 40.41916167664671,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 60.17964071856288,
+    "y": 39.59580838323353,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 59.48103792415169,
+    "y": 42.06586826347306,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 60.17964071856288,
+    "y": 41.691616766467064,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 66.01796407185628,
+    "y": 41.57934131736527,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 65.6686626746507,
+    "y": 43.07634730538922,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 59.980039920159676,
+    "y": 43.00149700598803,
+    "notes": "x10",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 65.6936127744511,
+    "y": 40.49401197604791,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 64.89520958083833,
+    "y": 43.11377245508982,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 73.92714570858283,
+    "y": 39.03443113772455,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 77.22055888223552,
+    "y": 40.30688622754491,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 80.66367265469061,
+    "y": 48.91467065868264,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 79.76546906187625,
+    "y": 54.041916167664674,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 73.80239520958084,
+    "y": 59.056886227544915,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Novice Astromancer",
+    "type": "melee",
+    "x": 70.53393213572853,
+    "y": 58.08383233532935,
+    "notes": "x5",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 73.82734530938124,
+    "y": 40.38173652694611,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 76.67165668662675,
+    "y": 41.279940119760475,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 79.79041916167665,
+    "y": 48.877245508982035,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 79.06686626746507,
+    "y": 53.25598802395209,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 73.92714570858283,
+    "y": 57.522455089820355,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Squire",
+    "type": "melee",
+    "x": 70.78343313373253,
+    "y": 56.362275449101794,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Nether Scryer",
+    "type": "caster",
+    "x": 74.57584830339322,
+    "y": 43.75,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Nether Scryer",
+    "type": "caster",
+    "x": 71.48203592814372,
+    "y": 52.806886227544915,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 74.7255489021956,
+    "y": 42.702095808383234,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 74.45109780439122,
+    "y": 44.648203592814376,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 71.8562874251497,
+    "y": 52.058383233532936,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Legionnaire",
+    "type": "melee",
+    "x": 71.08283433133732,
+    "y": 53.48053892215569,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 40.21956087824351,
+    "y": 39.67065868263473,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 41.51696606786427,
+    "y": 40.5688622754491,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Devastator",
+    "type": "melee",
+    "x": 44.36127744510978,
+    "y": 44.08682634730539,
+    "notes": "Patrol",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 34.13173652694611,
+    "y": 41.541916167664674,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 34.63073852295409,
+    "y": 42.964071856287426,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Devastator",
+    "type": "melee",
+    "x": 30.33932135728543,
+    "y": 44.98502994011976,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tempest Smith",
+    "type": "melee",
+    "x": 29.840319361277444,
+    "y": 44.08682634730539,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tempest Smith",
+    "type": "melee",
+    "x": 30.83832335329341,
+    "y": 45.958083832335326,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tempest Smith",
+    "type": "melee",
+    "x": 25.798403193612774,
+    "y": 51.571856287425156,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tempest Smith",
+    "type": "melee",
+    "x": 28.143712574850298,
+    "y": 49.8502994011976,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tempest Smith",
+    "type": "melee",
+    "x": 27.245508982035926,
+    "y": 46.33233532934132,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tempest Smith",
+    "type": "melee",
+    "x": 24.9500998003992,
+    "y": 46.40718562874252,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Devastator",
+    "type": "melee",
+    "x": 27.644710578842314,
+    "y": 45.43413173652694,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Devastator",
+    "type": "melee",
+    "x": 28.842315369261478,
+    "y": 49.8502994011976,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 25.399201596806385,
+    "y": 52.61976047904192,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 25.998003992015967,
+    "y": 52.61976047904192,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 24.151696606786427,
+    "y": 45.958083832335326,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Sentinel",
+    "type": "melee",
+    "x": 24.70059880239521,
+    "y": 45.28443113772455,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 26.546906187624753,
+    "y": 52.58233532934131,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 24.825349301397207,
+    "y": 52.32035928143712,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 28.717564870259483,
+    "y": 50.93562874251497,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 28.767465069860283,
+    "y": 48.76497005988024,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 28.068862275449103,
+    "y": 46.10778443113773,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 27.195608782435134,
+    "y": 44.83532934131736,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 25.27445109780439,
+    "y": 45.09730538922156,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crystalcore Mechanic",
+    "type": "caster",
+    "x": 23.827345309381236,
+    "y": 46.5943113772455,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Inquisitor",
+    "type": "caster",
+    "x": 59.10678642714571,
+    "y": 38.02395209580838,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 58.557884231536924,
+    "y": 38.32335329341318,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 59.6057884231537,
+    "y": 37.68712574850299,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Battle Mage",
+    "type": "melee",
+    "x": 57.93413173652695,
+    "y": 35.441616766467064,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Battle Mage",
+    "type": "melee",
+    "x": 58.982035928143716,
+    "y": 34.80538922155689,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 57.659680638722556,
+    "y": 34.6556886227545,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 58.78243512974052,
+    "y": 33.794910179640716,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 57.41017964071856,
+    "y": 33.869760479041915,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 58.38323353293413,
+    "y": 33.00898203592814,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 54.94011976047904,
+    "y": 28.592814371257486,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 55.489021956087825,
+    "y": 27.88173652694611,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 55.01497005988024,
+    "y": 29.34131736526946,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 55.98802395209581,
+    "y": 27.95658682634731,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Battle Mage",
+    "type": "melee",
+    "x": 55.31437125748503,
+    "y": 30.05239520958084,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Battle Mage",
+    "type": "melee",
+    "x": 56.51197604790419,
+    "y": 28.443113772455092,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 53.1187624750499,
+    "y": 22.71706586826347,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 53.61776447105788,
+    "y": 22.342814371257486,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Inquisitor",
+    "type": "caster",
+    "x": 53.3433133732535,
+    "y": 21.55688622754491,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Marshal",
+    "type": "melee",
+    "x": 52.61976047904192,
+    "y": 22.005988023952096,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Marshal",
+    "type": "melee",
+    "x": 50.623752495009974,
+    "y": 28.36826347305389,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Bloodwarder Marshal",
+    "type": "melee",
+    "x": 47.28043912175649,
+    "y": 22.342814371257486,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Inquisitor",
+    "type": "caster",
+    "x": 50.374251497005986,
+    "y": 27.245508982035926,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Inquisitor",
+    "type": "caster",
+    "x": 46.60678642714571,
+    "y": 22.567365269461078,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 49.9500998003992,
+    "y": 28.405688622754493,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Blood Knight",
+    "type": "melee",
+    "x": 46.63173652694611,
+    "y": 23.727544910179642,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 49.525948103792416,
+    "y": 27.47005988023952,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Crimson Hand Centurion",
+    "type": "melee",
+    "x": 47.20558882235529,
+    "y": 23.502994011976046,
+    "notes": "",
+    "isDead": false
+  }
+]
