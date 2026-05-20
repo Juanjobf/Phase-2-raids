@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tempest Keep - Dynamic Map Editor</title>
+  <title>TBC Raid Maps - Admin Editor</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   
   <style>
     body, html { margin: 0; padding: 0; height: 100%; background-color: #111; font-family: sans-serif; }
     #map { width: 100vw; height: 100vh; background-color: #000; cursor: crosshair; }
     
-    /* The floating Admin Panel */
     #admin-panel {
       position: absolute;
       bottom: 20px;
@@ -19,7 +18,7 @@
       padding: 15px;
       border: 2px solid #553311;
       border-radius: 8px;
-      z-index: 1000; /* Keeps it above the map */
+      z-index: 1000; 
       width: 300px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.5);
     }
@@ -35,14 +34,36 @@
 
     .leaflet-popup-content-wrapper { background: #1a1a1a; color: #f8b700; border: 1px solid #553311; }
     .leaflet-popup-tip { background: #1a1a1a; }
+    
+    /* Top Menu for Raid Selection */
+    #raid-selector {
+      position: absolute;
+      top: 20px;
+      left: 50px;
+      z-index: 1000;
+      background: rgba(20, 20, 20, 0.9);
+      padding: 10px;
+      border: 2px solid #553311;
+      border-radius: 8px;
+      color: #f8b700;
+      font-weight: bold;
+    }
+    #raid-selector select { background: #333; color: white; border: 1px solid #555; padding: 5px; font-size: 16px; margin-left: 10px; }
   </style>
 </head>
 <body>
 
-  <!-- The Map -->
+  <!-- Raid Selector (Top Left) -->
+  <div id="raid-selector">
+    <label for="active-raid">Select Raid:</label>
+    <select id="active-raid" onchange="switchRaid()">
+      <!-- Options are populated dynamically by JavaScript -->
+    </select>
+  </div>
+
   <div id="map"></div>
 
-  <!-- The Admin Panel -->
+  <!-- The Admin Panel (Bottom Left) -->
   <div id="admin-panel">
     <h3>Add New Mob</h3>
     <p style="font-size: 12px; margin: 0; color: #aaa;">Click anywhere on the map to auto-fill Wowhead coordinates.</p>
@@ -67,74 +88,124 @@
     <input type="text" id="mob-notes" placeholder="e.g., Interrupt the heal">
 
     <button onclick="saveMob()">Add to Map</button>
-    <button id="clear-data" onclick="clearData()">Clear All Saved Data</button>
-    <button id="export-data" onclick="exportData()" style="background: #115511; margin-top: 10px;">Export Data for Live Site</button>
+    <button id="clear-data" onclick="clearData()">Clear Data for THIS Raid</button>
+    <button id="export-data" onclick="exportData()" style="background: #115511; margin-top: 10px;">Export ALL Data for Live Site</button>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-    // --- MAP SETUP ---
-    const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
-    const imageWidth = 1002;
-    const imageHeight = 668;
-    const bounds = [[0, 0], [imageHeight, imageWidth]];
-    
-    L.imageOverlay('tempest-keep-map.jpg', bounds).addTo(map);
-    map.fitBounds(bounds);
+    // --- 1. RAID CONFIGURATION ---
+    // Add new raids here! Just provide the internal ID, display name, image file, and exact dimensions.
+    const raids = {
+      "tempest-keep": {
+        name: "Tempest Keep",
+        image: "tempest-keep-map.jpg",
+        width: 1002,
+        height: 668
+      },
+      "ssc": {
+        name: "Serpentshrine Cavern",
+        image: "ssc-map.jpg", 
+        width: 1002,  // <-- Update these when you get your SSC image!
+        height: 668  // <-- Update these when you get your SSC image!
+      },
+    };
 
-    // --- LAYERS ---
+    let currentRaidId = "tempest-keep"; // Default raid on load
+
+    // --- 2. DATA MANAGEMENT & MIGRATION ---
+    let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
+    
+    // Migration: If you have old Tempest Keep data, move it to the new format
+    const oldTkData = localStorage.getItem('tempestKeepMobs');
+    if (oldTkData && !allRaidData["tempest-keep"]) {
+      allRaidData["tempest-keep"] = JSON.parse(oldTkData);
+      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+      localStorage.removeItem('tempestKeepMobs'); // Cleanup old data
+    }
+
+    // Ensure the current raid has an array
+    if (!allRaidData[currentRaidId]) allRaidData[currentRaidId] = [];
+
+    // --- 3. MAP SETUP ---
+    const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
+    let currentImageOverlay = null;
+
     const bossLayer = L.layerGroup().addTo(map);
     const trashLayer = L.layerGroup().addTo(map);
     L.control.layers(null, { "Bosses": bossLayer, "Trash Packs": trashLayer }).addTo(map);
 
-    // --- HELPER: WOWHEAD TO LEAFLET PIXELS ---
+    // Populate the dropdown menu
+    const raidSelect = document.getElementById('active-raid');
+    for (const [id, data] of Object.entries(raids)) {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = data.name;
+      raidSelect.appendChild(option);
+    }
+
+    // --- 4. SWITCH RAID LOGIC ---
+    function switchRaid() {
+      currentRaidId = document.getElementById('active-raid').value;
+      const config = raids[currentRaidId];
+
+      // Ensure data array exists for the new raid
+      if (!allRaidData[currentRaidId]) allRaidData[currentRaidId] = [];
+
+      // Update image boundaries
+      const bounds = [[0, 0], [config.height, config.width]];
+      
+      // Remove old map image and load the new one
+      if (currentImageOverlay) map.removeLayer(currentImageOverlay);
+      currentImageOverlay = L.imageOverlay(config.image, bounds).addTo(map);
+      
+      map.fitBounds(bounds);
+      renderMarkers();
+    }
+
+    // --- 5. HELPERS: COORDINATES & STYLES ---
     function wowheadToLeaflet(wowheadX, wowheadY) {
-      const x = (wowheadX / 100) * imageWidth;
-      const y = imageHeight - ((wowheadY / 100) * imageHeight); 
+      const w = raids[currentRaidId].width;
+      const h = raids[currentRaidId].height;
+      const x = (wowheadX / 100) * w;
+      const y = h - ((wowheadY / 100) * h); 
       return [y, x];
     }
 
-    // --- HELPER: LEAFLET PIXELS TO WOWHEAD ---
     function leafletToWowhead(lat, lng) {
-      const wowheadX = (lng / imageWidth) * 100;
-      const wowheadY = ((imageHeight - lat) / imageHeight) * 100;
+      const w = raids[currentRaidId].width;
+      const h = raids[currentRaidId].height;
+      const wowheadX = (lng / w) * 100;
+      const wowheadY = ((h - lat) / h) * 100;
       return [wowheadX.toFixed(1), wowheadY.toFixed(1)];
     }
 
-    // --- CIRCLE STYLING ---
     function getCircleStyle(type) {
-      if (type === 'boss') {
-        return { color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.8, radius: 10, weight: 2 };
-      } else if (type === 'melee') {
-        return { color: '#ffaa00', fillColor: '#ffaa00', fillOpacity: 0.6, radius: 4, weight: 2 };
-      } else if (type === 'caster') {
-        return { color: '#aa00ff', fillColor: '#aa00ff', fillOpacity: 0.6, radius: 4, weight: 2 };
-      }
+      if (type === 'boss') return { color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.8, radius: 10, weight: 2 };
+      if (type === 'melee') return { color: '#ffaa00', fillColor: '#ffaa00', fillOpacity: 0.6, radius: 4, weight: 2 };
+      if (type === 'caster') return { color: '#aa00ff', fillColor: '#aa00ff', fillOpacity: 0.6, radius: 4, weight: 2 };
       return { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.6, radius: 4, weight: 2 };
     }
 
-    // --- CLICK TO AUTO-FILL COORDINATES ---
+    // --- 6. INTERACTIONS ---
     map.on('click', function(e) {
       const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
       document.getElementById('coord-x').value = wowheadCoords[0];
       document.getElementById('coord-y').value = wowheadCoords[1];
     });
 
-    // --- DATA MANAGEMENT ---
-    let savedMobs = JSON.parse(localStorage.getItem('tempestKeepMobs')) || [];
-
     function renderMarkers() {
-      // Clear existing markers to prevent duplicates when rendering
       bossLayer.clearLayers();
       trashLayer.clearLayers();
 
-      savedMobs.forEach(mob => {
+      const mobs = allRaidData[currentRaidId] || [];
+
+      mobs.forEach(mob => {
         const coords = wowheadToLeaflet(mob.x, mob.y);
         const style = getCircleStyle(mob.type);
         const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
         
-        // Draw the scaling circles
         L.circle(coords, style)
          .bindPopup(`<b>${mob.name}</b> (${mob.type})<br><hr>${mob.notes}`)
          .addTo(layer);
@@ -153,44 +224,38 @@
         return;
       }
 
-      // Add to array and save to browser storage
-      savedMobs.push({ name, type, x, y, notes });
-      localStorage.setItem('tempestKeepMobs', JSON.stringify(savedMobs));
+      allRaidData[currentRaidId].push({ name, type, x, y, notes });
+      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
 
-      // Clear the form and re-draw the map
       document.getElementById('mob-name').value = '';
       document.getElementById('mob-notes').value = '';
       renderMarkers();
     }
 
     function clearData() {
-      if(confirm("Are you sure you want to delete all saved mobs?")) {
-        localStorage.removeItem('tempestKeepMobs');
-        savedMobs = [];
+      if(confirm(`Are you sure you want to delete all saved mobs for ${raids[currentRaidId].name}?`)) {
+        allRaidData[currentRaidId] = [];
+        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
         renderMarkers();
       }
     }
 
     function exportData() {
-      // Grab the data from storage
-      const dataStr = localStorage.getItem('tempestKeepMobs') || "[]";
-      
-      // Create a downloadable JSON file in the browser
+      const dataStr = JSON.stringify(allRaidData);
       const blob = new Blob([dataStr], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       
-      // Create a temporary link and click it to trigger download
       const a = document.createElement('a');
       a.href = url;
-      a.download = "tempest_keep_mobs.json";
+      a.download = "all_raid_mobs.json";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
-    // Initial render on page load
-    renderMarkers();
+    // --- 7. INITIALIZE ---
+    switchRaid(); // Loads the default map and markers on startup
   </script>
 </body>
 </html>
