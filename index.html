@@ -28,8 +28,6 @@
     #admin-panel input, #admin-panel select { width: 100%; padding: 5px; margin-top: 3px; box-sizing: border-box; background: #333; color: white; border: 1px solid #555; }
     #admin-panel button { width: 100%; padding: 8px; margin-top: 15px; background: #553311; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 3px; }
     #admin-panel button:hover { background: #774411; }
-    #clear-data { background: #551111; margin-top: 10px; }
-    #clear-data:hover { background: #771111; }
 
     /* Kill Tracker Panel */
     #tracker-panel {
@@ -77,7 +75,9 @@
       font-size: 13px;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.8);
-      white-space: nowrap;
+      max-width: 250px;
+      white-space: normal;
+      padding: 6px 10px;
     }
     .wow-tooltip.leaflet-tooltip-top:before { border-top-color: #f8b700; }
     .wow-tooltip.leaflet-tooltip-bottom:before { border-bottom-color: #f8b700; }
@@ -106,13 +106,8 @@
     <p style="font-size: 12px; margin: 0; color: #aaa;">Click anywhere on the map to auto-fill Wowhead coordinates.</p>
     
     <label>Mob Name</label>
-    <input type="search" id="mob-name" list="tk-mobs" placeholder="Start typing a mob name..." onfocus="this.select()">
-    <datalist id="tk-mobs">
-      <option value="Al'ar"><option value="Void Reaver"><option value="High Astromancer Solarian"><option value="Kael'thas Sunstrider">
-      <option value="Astromancer Lord"><option value="Bloodwarder Legionnaire"><option value="Bloodwarder Marshal"><option value="Bloodwarder Squire"><option value="Bloodwarder Vindicator">
-      <option value="Crimson Hand Blood Knight"><option value="Crimson Hand Centurion"><option value="Crimson Hand Inquisitor"><option value="Crimson Hand Battle Mage"><option value="Crystalcore Devastator"><option value="Crystalcore Sentinel"><option value="Nether Scryer">
-      <option value="Phoenix-Hawk"><option value="Tempest Falconer"><option value="Novice Astromancer"><option value="Tempest Smith"><option value="Crystalcore Mechanic">
-    </datalist>
+    <input type="search" id="mob-name" list="raid-mobs" placeholder="Start typing a mob name..." onfocus="this.select()">
+    <datalist id="raid-mobs"></datalist>
 
     <label>Type</label>
     <select id="mob-type">
@@ -132,10 +127,18 @@
 
     <button id="save-btn" onclick="saveMob()">Add to Map</button>
     <button id="cancel-btn" onclick="cancelEdit()" style="display:none; background:#555; margin-top:5px;">Cancel Update</button>
-    <button id="clear-data" onclick="clearData()">Clear Data</button>
+    
+    <!-- Data Management Buttons -->
+    <div style="display: flex; gap: 5px; margin-top: 10px;">
+      <button id="clear-data" onclick="clearData()" style="background: #551111; flex: 1; margin-top:0;">Clear Map</button>
+      <button id="reset-data" onclick="resetToDefault()" style="background: #aa5500; flex: 1; margin-top:0;">Load Defaults</button>
+    </div>
+    
+    <!-- Mark All Alive Button -->
+    <button id="alive-all-data" onclick="markAllAlive()" style="background: #224466; margin-top: 5px; width: 100%;">Mark All Mobs Alive</button>
     
     <!-- Import / Export -->
-    <div style="display: flex; gap: 5px; margin-top: 10px;">
+    <div style="display: flex; gap: 5px; margin-top: 5px;">
       <button id="export-btn" onclick="exportData()" style="background: #115511; flex: 1; margin-top:0;">Export Raid</button>
       <button id="import-btn" onclick="document.getElementById('file-input').click()" style="background: #111155; flex: 1; margin-top:0;">Import Raid</button>
     </div>
@@ -147,8 +150,33 @@
   <script>
     // --- 1. CONFIGURATION ---
     const raids = {
-      "tempest-keep": { name: "Tempest Keep", image: "tempest-keep-map.jpg", width: 1002, height: 668 },
-      "ssc": { name: "Serpentshrine Cavern", image: "ssc-map.jpg", width: 1002, height: 668 }
+      "tempest-keep": { 
+        name: "Tempest Keep", 
+        image: "tempest-keep-map.jpg", 
+        width: 1002, 
+        height: 668,
+        mobs: [
+          "Al'ar", "Void Reaver", "High Astromancer Solarian", "Kael'thas Sunstrider",
+          "Astromancer Lord", "Bloodwarder Legionnaire", "Bloodwarder Marshal", "Bloodwarder Squire", "Bloodwarder Vindicator",
+          "Crimson Hand Blood Knight", "Crimson Hand Centurion", "Crimson Hand Inquisitor", "Crimson Hand Battle Mage",
+          "Crystalcore Devastator", "Crystalcore Sentinel", "Nether Scryer", "Phoenix-Hawk", "Tempest Falconer",
+          "Novice Astromancer", "Tempest Smith", "Crystalcore Mechanic"
+        ]
+      },
+      "ssc": { 
+        name: "Serpentshrine Cavern", 
+        image: "ssc-map.jpg", 
+        width: 1002, 
+        height: 668,
+        mobs: [
+          "Hydross the Unstable", "The Lurker Below", "Leotheras the Blind", "Fathom-Lord Karathress", "Morogrim Tidewalker", "Lady Vashj",
+          "Underbog Colossus", "Coilfang Shatterer", "Greyheart Tidecaller", "Coilfang Fathom-Witch", "Vashj'ir Honor Guard",
+          "Tidewalker Depth-Seer", "Tidewalker Harpooner", "Tidewalker Hydromancer", "Tidewalker Shaman", "Tidewalker Warrior",
+          "Tidewalker Lurker", "Greyheart Nether-Mage", "Greyheart Skulker", "Coilfang Priestess", "Coilfang Strider", 
+          "Coilfang Frenzy", "Coilfang Serpentguard", "Serpentshrine Sporebat", "Serpentshrine Lurker", 
+          "Tainted Water Elemental", "Pure Water Elemental", "Coilfang Hate-Screamer", "Coilfang Beast-Tamer", "Greyheart Technician", "Greyheart Shield-Bearer"
+        ]
+      }
     };
 
     const killRequirements = {
@@ -170,20 +198,15 @@
         { name: "Greyheart Tidecaller", req: 16 },
         { name: "Coilfang Fathom-Witch", req: 6 },
         { name: "Vashj'ir Honor Guard", req: 6 },
-        { name: "Tidewalker", matchPartial: true, req: 20, displayName: "Tidewalker (Any)" } 
+        { name: "Tidewalker", matchPartial: true, exclude: ["Morogrim Tidewalker"], req: 20, displayName: "Tidewalker (Any)" } 
       ]
     };
 
     let currentRaidId = "tempest-keep";
     let editingIndex = null;
-
-    // --- 2. DATA MANAGEMENT ---
     let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
-    for (const id of Object.keys(raids)) {
-      if (!allRaidData[id]) allRaidData[id] = [];
-    }
 
-    // --- 3. MAP SETUP ---
+    // --- 2. MAP SETUP ---
     const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
     let currentImageOverlay = null;
 
@@ -199,8 +222,8 @@
       raidSelect.appendChild(option);
     }
 
-    // --- 4. CORE LOGIC ---
-    function switchRaid() {
+    // --- 3. CORE LOGIC ---
+    async function switchRaid() {
       currentRaidId = document.getElementById('active-raid').value;
       const config = raids[currentRaidId];
 
@@ -209,11 +232,57 @@
       currentImageOverlay = L.imageOverlay(config.image, bounds).addTo(map);
       
       map.fitBounds(bounds);
+
+      if (!allRaidData[currentRaidId]) {
+        try {
+          const response = await fetch(`${currentRaidId}_mobs.json`);
+          if (response.ok) {
+            allRaidData[currentRaidId] = await response.json();
+          } else {
+            allRaidData[currentRaidId] = []; 
+          }
+        } catch (error) {
+          allRaidData[currentRaidId] = [];
+        }
+      }
+
       renderMarkers();
 
       document.getElementById('export-btn').textContent = "Export " + config.name;
       document.getElementById('import-btn').textContent = "Import " + config.name;
-      document.getElementById('clear-data').textContent = "Clear " + config.name;
+      
+      const datalist = document.getElementById('raid-mobs');
+      datalist.innerHTML = ''; 
+      
+      const sortedMobs = [...config.mobs].sort();
+      sortedMobs.forEach(mobName => {
+        const option = document.createElement('option');
+        option.value = mobName;
+        datalist.appendChild(option);
+      });
+      
+      document.getElementById('mob-name').value = '';
+    }
+
+    function resetToDefault() {
+      if(confirm(`Reset ${raids[currentRaidId].name} to server defaults? This will wipe your local changes.`)) {
+        delete allRaidData[currentRaidId];
+        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+        switchRaid();
+      }
+    }
+
+    function markAllAlive() {
+      const mobs = allRaidData[currentRaidId] || [];
+      if (mobs.length === 0) return;
+      
+      if(confirm(`Mark all mobs in ${raids[currentRaidId].name} as alive?`)) {
+        mobs.forEach(mob => {
+          mob.isDead = false;
+        });
+        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+        renderMarkers();
+      }
     }
 
     function wowheadToLeaflet(wowheadX, wowheadY) {
@@ -228,34 +297,60 @@
       return [(lng / w) * 100, ((h - lat) / h) * 100];
     }
 
-    function isMobRequired(mobName) {
+    function getKillProgress() {
+      const reqs = killRequirements[currentRaidId];
+      const mobs = allRaidData[currentRaidId] || [];
+      let progress = {};
+      if (!reqs) return progress;
+      
+      reqs.forEach(req => {
+        let deadCount = 0;
+        mobs.forEach(mob => {
+          if (mob.isDead) {
+            if (req.exclude && req.exclude.includes(mob.name)) return;
+            if (req.matchPartial && mob.name.includes(req.name)) deadCount++;
+            else if (mob.name === req.name) deadCount++;
+          }
+        });
+        progress[req.name] = { current: deadCount, req: req.req, displayName: req.displayName || req.name };
+      });
+      return progress;
+    }
+
+    function isMobRequired(mobName, progress) {
       const reqs = killRequirements[currentRaidId];
       if (!reqs) return false;
-      return reqs.some(r => r.matchPartial ? mobName.includes(r.name) : mobName === r.name);
+      return reqs.some(r => {
+        if (r.exclude && r.exclude.includes(mobName)) return false;
+        
+        let isMatch = r.matchPartial ? mobName.includes(r.name) : mobName === r.name;
+        if (isMatch) {
+          if (progress[r.name] && progress[r.name].current < progress[r.name].req) {
+            return true;
+          }
+        }
+        return false;
+      });
     }
 
-    // Map Styling differentiation
-    function getCircleStyle(mob) {
-      const isReq = isMobRequired(mob.name);
-
-      if (mob.isDead) {
-        // Dead mobs fade to a dark color
-        return { color: isReq ? '#004444' : '#222', fillColor: '#111', fillOpacity: 0.6, radius: 8, weight: 2 };
-      }
-
-      // Required mobs get a bright Cyan border. Optional mobs get a standard black border.
-      const strokeColor = isReq ? '#00ffff' : '#000000'; 
+    function getCircleStyle(mob, isReq) {
+      const radius = (mob.type === 'boss') ? 10 : 4;
       const strokeWidth = isReq ? 3 : 2;
 
-      // Preserving your updated radius values (10 and 4)
-      if (mob.type === 'boss') return { color: strokeColor, fillColor: '#ff0000', fillOpacity: 0.9, radius: 10, weight: strokeWidth };
-      if (mob.type === 'melee') return { color: strokeColor, fillColor: '#ffaa00', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
-      if (mob.type === 'caster') return { color: strokeColor, fillColor: '#aa00ff', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
-      return { color: strokeColor, fillColor: '#ffffff', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
+      if (mob.isDead) {
+        return { color: isReq ? '#004444' : '#222', fillColor: '#111', fillOpacity: 0.6, radius: radius, weight: strokeWidth };
+      }
+
+      const strokeColor = isReq ? '#00ffff' : '#000000'; 
+
+      if (mob.type === 'boss') return { color: strokeColor, fillColor: '#ff0000', fillOpacity: 0.9, radius: radius, weight: strokeWidth };
+      if (mob.type === 'melee') return { color: strokeColor, fillColor: '#ffaa00', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
+      if (mob.type === 'caster') return { color: strokeColor, fillColor: '#aa00ff', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
+      return { color: strokeColor, fillColor: '#ffffff', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
     }
 
-    // --- 5. RENDER & TRACKER UI ---
-    function updateTracker() {
+    // --- 4. RENDER & TRACKER UI ---
+    function updateTracker(progress) {
       const listEl = document.getElementById('tracker-list');
       const reqs = killRequirements[currentRaidId];
       if (!reqs) {
@@ -263,24 +358,14 @@
         return;
       }
 
-      const mobs = allRaidData[currentRaidId] || [];
       let html = '';
       reqs.forEach(req => {
-        let deadCount = 0;
-        mobs.forEach(mob => {
-          if (mob.isDead) {
-            if (req.matchPartial && mob.name.includes(req.name)) deadCount++;
-            else if (mob.name === req.name) deadCount++;
-          }
-        });
-
-        const isMet = deadCount >= req.req;
-        const display = req.displayName || req.name;
-
-        // UI Differentiation: Completed ones go dark, pending ones stay bright
+        const p = progress[req.name];
+        const isMet = p.current >= p.req;
+        
         const bgColor = isMet ? '#1a1a1a' : '#2a2a2a';
-        const borderColor = isMet ? '#115511' : '#f8b700'; // Green if done, Gold if needed
-        const textColor = isMet ? '#555' : '#eee'; // Dark if done, Bright if needed
+        const borderColor = isMet ? '#115511' : '#f8b700'; 
+        const textColor = isMet ? '#555' : '#eee'; 
         const textDeco = isMet ? 'line-through' : 'none';
 
         html += `
@@ -295,8 +380,8 @@
             display: flex;
             justify-content: space-between;
           ">
-            <span>${display}</span>
-            <span style="font-weight:bold;">${deadCount} / ${req.req}</span>
+            <span>${p.displayName}</span>
+            <span style="font-weight:bold;">${p.current} / ${p.req}</span>
           </li>`;
       });
       listEl.innerHTML = html;
@@ -305,14 +390,16 @@
     function renderMarkers() {
       bossLayer.clearLayers();
       trashLayer.clearLayers();
+      
       const mobs = allRaidData[currentRaidId] || [];
+      const currentProgress = getKillProgress();
 
       mobs.forEach((mob, index) => {
         const coords = wowheadToLeaflet(mob.x, mob.y);
-        const style = getCircleStyle(mob);
+        const isReq = isMobRequired(mob.name, currentProgress);
+        const style = getCircleStyle(mob, isReq);
         const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
         
-        const isReq = isMobRequired(mob.name);
         const reqLabel = isReq && !mob.isDead ? `<div style="color:#00ffff; font-size:10px; font-weight:bold; margin-bottom:4px;">⭐ REQUIRED KILL</div>` : '';
 
         const popupContent = `
@@ -333,30 +420,37 @@
           </div>
         `;
 
-        // Draw the circle with bound popup and tooltip
+        const tooltipContent = mob.notes 
+          ? `<div style="text-align: center;">
+              <div><b>${mob.name}</b></div>
+              <div style="font-weight: normal; font-size: 11px; color: #ccc; border-top: 1px solid #553311; margin-top: 4px; padding-top: 2px;">
+                ${mob.notes}
+              </div>
+             </div>`
+          : `<b>${mob.name}</b>`;
+
         const circle = L.circle(coords, style)
           .bindPopup(popupContent)
-          .bindTooltip(mob.name, { 
+          .bindTooltip(tooltipContent, { 
             className: 'wow-tooltip', 
             direction: 'top', 
-            offset: [0, -style.radius] // Keep tooltip slightly above the circle
+            offset: [0, -style.radius] 
           })
           .addTo(layer);
 
-        // Hover event: increase radius dynamically
         circle.on('mouseover', function(e) {
-          this.setRadius(style.radius + 4); // Bumps radius up by 4 when hovered
+          this.setRadius(style.radius + 4); 
         });
         
-        // Mouse out event: reset radius
         circle.on('mouseout', function(e) {
           this.setRadius(style.radius);
         });
       });
-      updateTracker();
+      
+      updateTracker(currentProgress);
     }
 
-    // --- 6. INTERACTIONS ---
+    // --- 5. INTERACTIONS ---
     map.on('click', function(e) {
       const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
       document.getElementById('coord-x').value = wowheadCoords[0];
@@ -425,14 +519,14 @@
     }
 
     function clearData() {
-      if(confirm(`Are you sure you want to delete all saved mobs for ${raids[currentRaidId].name}?`)) {
+      if(confirm(`Are you sure you want to clear all local changes for ${raids[currentRaidId].name}?`)) {
         allRaidData[currentRaidId] = [];
         localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
         renderMarkers();
       }
     }
 
-    // --- 7. IMPORT / EXPORT LOGIC ---
+    // --- 6. IMPORT / EXPORT LOGIC ---
     function exportData() {
       const raidData = allRaidData[currentRaidId] || [];
       const dataStr = JSON.stringify(raidData, null, 2);
@@ -474,7 +568,7 @@
       reader.readAsText(file);
     }
 
-    // --- 8. INITIALIZE ---
+    // --- 7. INITIALIZE ---
     switchRaid(); 
   </script>
 </body>
