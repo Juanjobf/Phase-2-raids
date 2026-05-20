@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TBC Raid Maps - Admin Editor</title>
+  <title>TBC Raid Maps - Admin Editor & Tracker</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   
   <style>
     body, html { margin: 0; padding: 0; height: 100%; background-color: #111; font-family: sans-serif; }
     #map { width: 100vw; height: 100vh; background-color: #000; cursor: crosshair; }
     
+    /* Admin Panel */
     #admin-panel {
       position: absolute;
       bottom: 20px;
@@ -22,20 +23,34 @@
       width: 300px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.5);
     }
-
     #admin-panel h3 { margin: 0 0 10px 0; color: #f8b700; }
     #admin-panel label { display: block; margin-top: 10px; font-size: 12px; color: #ccc;}
     #admin-panel input, #admin-panel select { width: 100%; padding: 5px; margin-top: 3px; box-sizing: border-box; background: #333; color: white; border: 1px solid #555; }
-    #admin-panel button { width: 100%; padding: 8px; margin-top: 15px; background: #553311; color: white; border: none; cursor: pointer; font-weight: bold; }
+    #admin-panel button { width: 100%; padding: 8px; margin-top: 15px; background: #553311; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 3px; }
     #admin-panel button:hover { background: #774411; }
-    
     #clear-data { background: #551111; margin-top: 10px; }
     #clear-data:hover { background: #771111; }
 
-    .leaflet-popup-content-wrapper { background: #1a1a1a; color: #f8b700; border: 1px solid #553311; }
-    .leaflet-popup-tip { background: #1a1a1a; }
-    
-    /* Top Menu for Raid Selection */
+    /* Kill Tracker Panel */
+    #tracker-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(20, 20, 20, 0.9);
+      color: white;
+      padding: 15px;
+      border: 2px solid #553311;
+      border-radius: 8px;
+      z-index: 1000;
+      width: 260px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+    #tracker-panel h3 { margin: 0 0 10px 0; color: #f8b700; border-bottom: 1px solid #553311; padding-bottom: 5px; }
+    #tracker-list { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+
+    /* Raid Selector */
     #raid-selector {
       position: absolute;
       top: 20px;
@@ -49,27 +64,41 @@
       font-weight: bold;
     }
     #raid-selector select { background: #333; color: white; border: 1px solid #555; padding: 5px; font-size: 16px; margin-left: 10px; }
+
+    .leaflet-popup-content-wrapper { background: #1a1a1a; color: #f8b700; border: 1px solid #553311; width: 220px; }
+    .leaflet-popup-tip { background: #1a1a1a; }
   </style>
 </head>
 <body>
 
-  <!-- Raid Selector (Top Left) -->
+  <!-- Raid Selector -->
   <div id="raid-selector">
     <label for="active-raid">Select Raid:</label>
-    <select id="active-raid" onchange="switchRaid()">
-      <!-- Options are populated dynamically by JavaScript -->
-    </select>
+    <select id="active-raid" onchange="switchRaid()"></select>
   </div>
 
+  <!-- The Map -->
   <div id="map"></div>
 
-  <!-- The Admin Panel (Bottom Left) -->
+  <!-- Kill Tracker Panel -->
+  <div id="tracker-panel">
+    <h3>Required Kills</h3>
+    <ul id="tracker-list"></ul>
+  </div>
+
+  <!-- Admin Panel -->
   <div id="admin-panel">
-    <h3>Add New Mob</h3>
+    <h3>Add / Edit Mob</h3>
     <p style="font-size: 12px; margin: 0; color: #aaa;">Click anywhere on the map to auto-fill Wowhead coordinates.</p>
     
     <label>Mob Name</label>
-    <input type="text" id="mob-name" placeholder="e.g., Blood Elf Pack">
+    <input type="search" id="mob-name" list="tk-mobs" placeholder="Start typing a mob name..." onfocus="this.select()">
+    <datalist id="tk-mobs">
+      <option value="Al'ar"><option value="Void Reaver"><option value="High Astromancer Solarian"><option value="Kael'thas Sunstrider">
+      <option value="Astromancer Lord"><option value="Bloodwarder Legionnaire"><option value="Bloodwarder Marshal"><option value="Bloodwarder Squire"><option value="Bloodwarder Vindicator">
+      <option value="Crimson Hand Blood Knight"><option value="Crimson Hand Centurion"><option value="Crimson Hand Inquisitor"><option value="Crimson Hand Battle Mage"><option value="Crystalcore Devastator"><option value="Crystalcore Sentinel"><option value="Nether Scryer">
+      <option value="Phoenix-Hawk"><option value="Tempest Falconer"><option value="Novice Astromancer"><option value="Tempest Smith"><option value="Crystalcore Mechanic">
+    </datalist>
 
     <label>Type</label>
     <select id="mob-type">
@@ -87,46 +116,58 @@
     <label>Notes / Strategy</label>
     <input type="text" id="mob-notes" placeholder="e.g., Interrupt the heal">
 
-    <button onclick="saveMob()">Add to Map</button>
-    <button id="clear-data" onclick="clearData()">Clear Data for THIS Raid</button>
-    <button id="export-data" onclick="exportData()" style="background: #115511; margin-top: 10px;">Export ALL Data for Live Site</button>
+    <button id="save-btn" onclick="saveMob()">Add to Map</button>
+    <button id="cancel-btn" onclick="cancelEdit()" style="display:none; background:#555; margin-top:5px;">Cancel Update</button>
+    <button id="clear-data" onclick="clearData()">Clear Data</button>
+    
+    <!-- Import / Export -->
+    <div style="display: flex; gap: 5px; margin-top: 10px;">
+      <button id="export-btn" onclick="exportData()" style="background: #115511; flex: 1; margin-top:0;">Export Raid</button>
+      <button id="import-btn" onclick="document.getElementById('file-input').click()" style="background: #111155; flex: 1; margin-top:0;">Import Raid</button>
+    </div>
+    <input type="file" id="file-input" style="display: none;" accept=".json" onchange="importData(event)">
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-    // --- 1. RAID CONFIGURATION ---
-    // Add new raids here! Just provide the internal ID, display name, image file, and exact dimensions.
+    // --- 1. CONFIGURATION ---
     const raids = {
-      "tempest-keep": {
-        name: "Tempest Keep",
-        image: "tempest-keep-map.jpg",
-        width: 1002,
-        height: 668
-      },
-      "ssc": {
-        name: "Serpentshrine Cavern",
-        image: "ssc-map.jpg", 
-        width: 1002,  // <-- Update these when you get your SSC image!
-        height: 668  // <-- Update these when you get your SSC image!
-      },
+      "tempest-keep": { name: "Tempest Keep", image: "tempest-keep-map.jpg", width: 1002, height: 668 },
+      "ssc": { name: "Serpentshrine Cavern", image: "ssc-map.jpg", width: 1002, height: 668 }
     };
 
-    let currentRaidId = "tempest-keep"; // Default raid on load
+    const killRequirements = {
+      "tempest-keep": [
+        { name: "Bloodwarder Legionnaire", req: 11 },
+        { name: "Bloodwarder Vindicator", req: 3 },
+        { name: "Bloodwarder Squire", req: 12 },
+        { name: "Tempest Falconer", req: 4 },
+        { name: "Phoenix-Hawk", req: 4 },
+        { name: "Crystalcore Devastator", req: 4 },
+        { name: "Crystalcore Sentinel", req: 10 },
+        { name: "Astromancer Lord", req: 1 },
+        { name: "Nether Scryer", req: 2 },
+        { name: "Crimson Hand Battle Mage", req: 4 }
+      ],
+      "ssc": [
+        { name: "Underbog Colossus", req: 6 },
+        { name: "Coilfang Shatterer", req: 14 },
+        { name: "Greyheart Tidecaller", req: 16 },
+        { name: "Coilfang Fathom-Witch", req: 6 },
+        { name: "Vashj'ir Honor Guard", req: 6 },
+        { name: "Tidewalker", matchPartial: true, req: 20, displayName: "Tidewalker (Any)" } 
+      ]
+    };
 
-    // --- 2. DATA MANAGEMENT & MIGRATION ---
+    let currentRaidId = "tempest-keep";
+    let editingIndex = null;
+
+    // --- 2. DATA MANAGEMENT ---
     let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
-    
-    // Migration: If you have old Tempest Keep data, move it to the new format
-    const oldTkData = localStorage.getItem('tempestKeepMobs');
-    if (oldTkData && !allRaidData["tempest-keep"]) {
-      allRaidData["tempest-keep"] = JSON.parse(oldTkData);
-      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-      localStorage.removeItem('tempestKeepMobs'); // Cleanup old data
+    for (const id of Object.keys(raids)) {
+      if (!allRaidData[id]) allRaidData[id] = [];
     }
-
-    // Ensure the current raid has an array
-    if (!allRaidData[currentRaidId]) allRaidData[currentRaidId] = [];
 
     // --- 3. MAP SETUP ---
     const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
@@ -136,7 +177,6 @@
     const trashLayer = L.layerGroup().addTo(map);
     L.control.layers(null, { "Bosses": bossLayer, "Trash Packs": trashLayer }).addTo(map);
 
-    // Populate the dropdown menu
     const raidSelect = document.getElementById('active-raid');
     for (const [id, data] of Object.entries(raids)) {
       const option = document.createElement('option');
@@ -145,47 +185,141 @@
       raidSelect.appendChild(option);
     }
 
-    // --- 4. SWITCH RAID LOGIC ---
+    // --- 4. CORE LOGIC ---
     function switchRaid() {
       currentRaidId = document.getElementById('active-raid').value;
       const config = raids[currentRaidId];
 
-      // Ensure data array exists for the new raid
-      if (!allRaidData[currentRaidId]) allRaidData[currentRaidId] = [];
-
-      // Update image boundaries
       const bounds = [[0, 0], [config.height, config.width]];
-      
-      // Remove old map image and load the new one
       if (currentImageOverlay) map.removeLayer(currentImageOverlay);
       currentImageOverlay = L.imageOverlay(config.image, bounds).addTo(map);
       
       map.fitBounds(bounds);
       renderMarkers();
+
+      document.getElementById('export-btn').textContent = "Export " + config.name;
+      document.getElementById('import-btn').textContent = "Import " + config.name;
+      document.getElementById('clear-data').textContent = "Clear " + config.name;
     }
 
-    // --- 5. HELPERS: COORDINATES & STYLES ---
     function wowheadToLeaflet(wowheadX, wowheadY) {
       const w = raids[currentRaidId].width;
       const h = raids[currentRaidId].height;
-      const x = (wowheadX / 100) * w;
-      const y = h - ((wowheadY / 100) * h); 
-      return [y, x];
+      return [h - ((wowheadY / 100) * h), (wowheadX / 100) * w];
     }
 
     function leafletToWowhead(lat, lng) {
       const w = raids[currentRaidId].width;
       const h = raids[currentRaidId].height;
-      const wowheadX = (lng / w) * 100;
-      const wowheadY = ((h - lat) / h) * 100;
-      return [wowheadX.toFixed(1), wowheadY.toFixed(1)];
+      return [(lng / w) * 100, ((h - lat) / h) * 100];
     }
 
-    function getCircleStyle(type) {
-      if (type === 'boss') return { color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.8, radius: 10, weight: 2 };
-      if (type === 'melee') return { color: '#ffaa00', fillColor: '#ffaa00', fillOpacity: 0.6, radius: 4, weight: 2 };
-      if (type === 'caster') return { color: '#aa00ff', fillColor: '#aa00ff', fillOpacity: 0.6, radius: 4, weight: 2 };
-      return { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.6, radius: 4, weight: 2 };
+    function isMobRequired(mobName) {
+      const reqs = killRequirements[currentRaidId];
+      if (!reqs) return false;
+      return reqs.some(r => r.matchPartial ? mobName.includes(r.name) : mobName === r.name);
+    }
+
+    // Map Styling differentiation
+    function getCircleStyle(mob) {
+      const isReq = isMobRequired(mob.name);
+
+      if (mob.isDead) {
+        // Dead mobs fade to a dark color
+        return { color: isReq ? '#004444' : '#222', fillColor: '#111', fillOpacity: 0.6, radius: 8, weight: 2 };
+      }
+
+      // Required mobs get a bright Cyan border. Optional mobs get a standard black border.
+      const strokeColor = isReq ? '#00ffff' : '#000000'; 
+      const strokeWidth = isReq ? 3 : 2;
+
+      if (mob.type === 'boss') return { color: strokeColor, fillColor: '#ff0000', fillOpacity: 0.9, radius: 10, weight: strokeWidth };
+      if (mob.type === 'melee') return { color: strokeColor, fillColor: '#ffaa00', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
+      if (mob.type === 'caster') return { color: strokeColor, fillColor: '#aa00ff', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
+      return { color: strokeColor, fillColor: '#ffffff', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
+    }
+
+    // --- 5. RENDER & TRACKER UI ---
+    function updateTracker() {
+      const listEl = document.getElementById('tracker-list');
+      const reqs = killRequirements[currentRaidId];
+      if (!reqs) {
+        listEl.innerHTML = "<li style='color:#777'>No requirements set for this raid.</li>";
+        return;
+      }
+
+      const mobs = allRaidData[currentRaidId] || [];
+      let html = '';
+      reqs.forEach(req => {
+        let deadCount = 0;
+        mobs.forEach(mob => {
+          if (mob.isDead) {
+            if (req.matchPartial && mob.name.includes(req.name)) deadCount++;
+            else if (mob.name === req.name) deadCount++;
+          }
+        });
+
+        const isMet = deadCount >= req.req;
+        const display = req.displayName || req.name;
+
+        // UI Differentiation: Completed ones go dark, pending ones stay bright
+        const bgColor = isMet ? '#1a1a1a' : '#2a2a2a';
+        const borderColor = isMet ? '#115511' : '#f8b700'; // Green if done, Gold if needed
+        const textColor = isMet ? '#555' : '#eee'; // Dark if done, Bright if needed
+        const textDeco = isMet ? 'line-through' : 'none';
+
+        html += `
+          <li style="
+            background: ${bgColor}; 
+            border-left: 4px solid ${borderColor}; 
+            padding: 6px 10px; 
+            margin-bottom: 6px; 
+            color: ${textColor}; 
+            text-decoration: ${textDeco}; 
+            border-radius: 0 4px 4px 0;
+            display: flex;
+            justify-content: space-between;
+          ">
+            <span>${display}</span>
+            <span style="font-weight:bold;">${deadCount} / ${req.req}</span>
+          </li>`;
+      });
+      listEl.innerHTML = html;
+    }
+
+    function renderMarkers() {
+      bossLayer.clearLayers();
+      trashLayer.clearLayers();
+      const mobs = allRaidData[currentRaidId] || [];
+
+      mobs.forEach((mob, index) => {
+        const coords = wowheadToLeaflet(mob.x, mob.y);
+        const style = getCircleStyle(mob);
+        const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
+        
+        const isReq = isMobRequired(mob.name);
+        const reqLabel = isReq && !mob.isDead ? `<div style="color:#00ffff; font-size:10px; font-weight:bold; margin-bottom:4px;">⭐ REQUIRED KILL</div>` : '';
+
+        const popupContent = `
+          <div style="text-align:center; margin-bottom: 8px;">
+            ${reqLabel}
+            <b style="font-size:14px; text-decoration: ${mob.isDead ? 'line-through' : 'none'}; color: ${mob.isDead ? '#888' : '#f8b700'}">${mob.name}</b><br>
+            <span style="font-size:11px; color:#aaa;">(${mob.type})</span>
+          </div>
+          ${mob.notes ? `<div style="margin-bottom:8px; font-size:12px;">${mob.notes}</div>` : ''}
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <button onclick="toggleDead(${index})" style="background:${mob.isDead ? '#115511' : '#662222'}; color:white; border:none; padding:6px; cursor:pointer; border-radius:3px; font-weight:bold;">
+              ${mob.isDead ? 'Revive (Mark Alive)' : 'Mark as Dead'}
+            </button>
+            <div style="display:flex; gap:5px;">
+              <button onclick="loadEdit(${index})" style="background:#aa7700; color:white; border:none; padding:4px; cursor:pointer; border-radius:3px; flex:1;">Edit</button>
+              <button onclick="deleteMob(${index})" style="background:#aa0000; color:white; border:none; padding:4px; cursor:pointer; border-radius:3px; flex:1;">Delete</button>
+            </div>
+          </div>
+        `;
+        L.circle(coords, style).bindPopup(popupContent).addTo(layer);
+      });
+      updateTracker();
     }
 
     // --- 6. INTERACTIONS ---
@@ -195,41 +329,65 @@
       document.getElementById('coord-y').value = wowheadCoords[1];
     });
 
-    function renderMarkers() {
-      bossLayer.clearLayers();
-      trashLayer.clearLayers();
+    function toggleDead(index) {
+      allRaidData[currentRaidId][index].isDead = !allRaidData[currentRaidId][index].isDead;
+      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+      renderMarkers();
+    }
 
-      const mobs = allRaidData[currentRaidId] || [];
+    function loadEdit(index) {
+      const mob = allRaidData[currentRaidId][index];
+      document.getElementById('mob-name').value = mob.name;
+      document.getElementById('mob-type').value = mob.type;
+      document.getElementById('coord-x').value = mob.x;
+      document.getElementById('coord-y').value = mob.y;
+      document.getElementById('mob-notes').value = mob.notes;
 
-      mobs.forEach(mob => {
-        const coords = wowheadToLeaflet(mob.x, mob.y);
-        const style = getCircleStyle(mob.type);
-        const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
-        
-        L.circle(coords, style)
-         .bindPopup(`<b>${mob.name}</b> (${mob.type})<br><hr>${mob.notes}`)
-         .addTo(layer);
-      });
+      editingIndex = index;
+      const saveBtn = document.getElementById('save-btn');
+      saveBtn.textContent = "Update Map";
+      saveBtn.style.background = "#b8860b";
+      document.getElementById('cancel-btn').style.display = "block";
+      map.closePopup();
+    }
+
+    function cancelEdit() {
+      editingIndex = null;
+      document.getElementById('save-btn').textContent = "Add to Map";
+      document.getElementById('save-btn').style.background = "#553311";
+      document.getElementById('cancel-btn').style.display = "none";
+      document.getElementById('mob-notes').value = '';
     }
 
     function saveMob() {
-      const name = document.getElementById('mob-name').value;
+      const name = document.getElementById('mob-name').value.trim();
       const type = document.getElementById('mob-type').value;
       const x = parseFloat(document.getElementById('coord-x').value);
       const y = parseFloat(document.getElementById('coord-y').value);
       const notes = document.getElementById('mob-notes').value;
 
-      if (!name || isNaN(x) || isNaN(y)) {
-        alert("Please enter a name and valid coordinates.");
-        return;
+      if (!name || isNaN(x) || isNaN(y)) { alert("Please enter a name and valid coordinates."); return; }
+
+      if (editingIndex !== null) {
+        const currentDeadStatus = allRaidData[currentRaidId][editingIndex].isDead;
+        allRaidData[currentRaidId][editingIndex] = { name, type, x, y, notes, isDead: currentDeadStatus };
+        cancelEdit();
+      } else {
+        allRaidData[currentRaidId].push({ name, type, x, y, notes, isDead: false });
       }
 
-      allRaidData[currentRaidId].push({ name, type, x, y, notes });
       localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-
-      document.getElementById('mob-name').value = '';
       document.getElementById('mob-notes').value = '';
       renderMarkers();
+    }
+
+    function deleteMob(index) {
+      if(confirm("Are you sure you want to delete this mob?")) {
+        allRaidData[currentRaidId].splice(index, 1);
+        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+        if(editingIndex === index) cancelEdit();
+        renderMarkers();
+      }
     }
 
     function clearData() {
@@ -240,22 +398,50 @@
       }
     }
 
+    // --- 7. IMPORT / EXPORT LOGIC ---
     function exportData() {
-      const dataStr = JSON.stringify(allRaidData);
+      const raidData = allRaidData[currentRaidId] || [];
+      const dataStr = JSON.stringify(raidData, null, 2);
       const blob = new Blob([dataStr], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      
       const a = document.createElement('a');
       a.href = url;
-      a.download = "all_raid_mobs.json";
+      a.download = `${currentRaidId}_mobs.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
-    // --- 7. INITIALIZE ---
-    switchRaid(); // Loads the default map and markers on startup
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (!Array.isArray(importedData)) {
+            alert("Invalid file format. Please upload a valid JSON file exported from this tool.");
+            return;
+          }
+
+          if(confirm(`Are you sure you want to overwrite your map for ${raids[currentRaidId].name} with this file?`)) {
+            allRaidData[currentRaidId] = importedData;
+            localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+            renderMarkers();
+            alert(`Successfully imported ${importedData.length} mobs to ${raids[currentRaidId].name}!`);
+          }
+        } catch (error) {
+          alert("Error reading JSON file.");
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    // --- 8. INITIALIZE ---
+    switchRaid(); 
   </script>
 </body>
 </html>
