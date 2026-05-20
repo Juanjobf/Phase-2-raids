@@ -78,32 +78,32 @@
       max-width: 250px;
       white-space: normal;
       padding: 6px 10px;
+      pointer-events: none; 
     }
     .wow-tooltip.leaflet-tooltip-top:before { border-top-color: #f8b700; }
     .wow-tooltip.leaflet-tooltip-bottom:before { border-bottom-color: #f8b700; }
+
+    .tracker-item:hover { filter: brightness(1.2); }
   </style>
 </head>
 <body>
 
-  <!-- Raid Selector -->
   <div id="raid-selector">
     <label for="active-raid">Select Raid:</label>
     <select id="active-raid" onchange="switchRaid()"></select>
   </div>
 
-  <!-- The Map -->
   <div id="map"></div>
 
-  <!-- Kill Tracker Panel -->
   <div id="tracker-panel">
     <h3>Required Kills</h3>
     <ul id="tracker-list"></ul>
   </div>
 
-  <!-- Admin Panel -->
   <div id="admin-panel">
     <h3>Add / Edit Mob</h3>
     <p style="font-size: 12px; margin: 0; color: #aaa;">Click anywhere on the map to auto-fill Wowhead coordinates.</p>
+    <p style="font-size: 11px; margin: 4px 0 0 0; color: #00ffff; font-weight: bold;">💡 Sweep map with Ctrl held to Kill, Shift to Revive!</p>
     
     <label>Mob Name</label>
     <input type="search" id="mob-name" list="raid-mobs" placeholder="Start typing a mob name..." onfocus="this.select()">
@@ -128,16 +128,13 @@
     <button id="save-btn" onclick="saveMob()">Add to Map</button>
     <button id="cancel-btn" onclick="cancelEdit()" style="display:none; background:#555; margin-top:5px;">Cancel Update</button>
     
-    <!-- Data Management Buttons -->
     <div style="display: flex; gap: 5px; margin-top: 10px;">
       <button id="clear-data" onclick="clearData()" style="background: #551111; flex: 1; margin-top:0;">Clear Map</button>
       <button id="reset-data" onclick="resetToDefault()" style="background: #aa5500; flex: 1; margin-top:0;">Load Defaults</button>
     </div>
     
-    <!-- Mark All Alive Button -->
     <button id="alive-all-data" onclick="markAllAlive()" style="background: #224466; margin-top: 5px; width: 100%;">Mark All Mobs Alive</button>
     
-    <!-- Import / Export -->
     <div style="display: flex; gap: 5px; margin-top: 5px;">
       <button id="export-btn" onclick="exportData()" style="background: #115511; flex: 1; margin-top:0;">Export Raid</button>
       <button id="import-btn" onclick="document.getElementById('file-input').click()" style="background: #111155; flex: 1; margin-top:0;">Import Raid</button>
@@ -205,6 +202,7 @@
     let currentRaidId = "tempest-keep";
     let editingIndex = null;
     let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
+    let currentMapCircles = []; 
 
     // --- 2. MAP SETUP ---
     const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
@@ -297,6 +295,7 @@
       return [(lng / w) * 100, ((h - lat) / h) * 100];
     }
 
+    // Progress counting calculations
     function getKillProgress() {
       const reqs = killRequirements[currentRaidId];
       const mobs = allRaidData[currentRaidId] || [];
@@ -349,7 +348,136 @@
       return { color: strokeColor, fillColor: '#ffffff', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
     }
 
-    // --- 4. RENDER & TRACKER UI ---
+    // --- 4. DYNAMIC HOVER & RE-STYLING LOGIC ---
+    function refreshAllMarkersState() {
+      const currentProgress = getKillProgress();
+      
+      currentMapCircles.forEach(item => {
+        const mob = allRaidData[currentRaidId][item.index];
+        const isReq = isMobRequired(mob.name, currentProgress);
+        const style = getCircleStyle(mob, isReq);
+        
+        item.circle.setStyle(style);
+        item.baseRadius = style.radius; 
+
+        const reqLabel = isReq && !mob.isDead ? `<div style="color:#00ffff; font-size:10px; font-weight:bold; margin-bottom:4px;">⭐ REQUIRED KILL</div>` : '';
+        const popupContent = `
+          <div style="text-align:center; margin-bottom: 8px;">
+            ${reqLabel}
+            <b style="font-size:14px; text-decoration: ${mob.isDead ? 'line-through' : 'none'}; color: ${mob.isDead ? '#888' : '#f8b700'}">${mob.name}</b><br>
+            <span style="font-size:11px; color:#aaa;">(${mob.type})</span>
+          </div>
+          ${mob.notes ? `<div style="margin-bottom:8px; font-size:12px;">${mob.notes}</div>` : ''}
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <button onclick="toggleDead(${item.index})" style="background:${mob.isDead ? '#115511' : '#662222'}; color:white; border:none; padding:6px; cursor:pointer; border-radius:3px; font-weight:bold;">
+              ${mob.isDead ? 'Revive (Mark Alive)' : 'Mark as Dead'}
+            </button>
+            <div style="display:flex; gap:5px;">
+              <button onclick="loadEdit(${item.index})" style="background:#aa7700; color:white; border:none; padding:4px; cursor:pointer; border-radius:3px; flex:1;">Edit</button>
+              <button onclick="deleteMob(${item.index})" style="background:#aa0000; color:white; border:none; padding:4px; cursor:pointer; border-radius:3px; flex:1;">Delete</button>
+            </div>
+          </div>
+        `;
+        item.circle.setPopupContent(popupContent);
+      });
+      
+      updateTracker(currentProgress);
+    }
+
+    function clearAllMapHighlights() {
+      currentMapCircles.forEach(item => {
+        item.circle.setRadius(item.baseRadius);
+        item.circle.closeTooltip();
+      });
+    }
+
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'Control' || e.key === 'Shift') {
+        refreshAllMarkersState();
+        clearAllMapHighlights();
+      }
+    });
+
+    function highlightMobsExact(targetName) {
+      currentMapCircles.forEach(item => {
+        if (item.name === targetName) {
+          item.circle.setRadius(item.baseRadius + 4);
+          item.circle.bringToFront();
+          item.circle.openTooltip(); 
+        }
+      });
+    }
+
+    function unhighlightMobsExact(targetName) {
+      currentMapCircles.forEach(item => {
+        if (item.name === targetName) {
+          item.circle.setRadius(item.baseRadius);
+          item.circle.closeTooltip();
+        }
+      });
+    }
+
+    function highlightRequirementByIndex(index) {
+      const req = killRequirements[currentRaidId][index];
+      if (!req) return;
+      currentMapCircles.forEach(item => {
+        let isMatch = false;
+        if (req.exclude && req.exclude.includes(item.name)) return;
+        if (req.matchPartial && item.name.includes(req.name)) isMatch = true;
+        else if (item.name === req.name) isMatch = true;
+        
+        if (isMatch) {
+          item.circle.setRadius(item.baseRadius + 4);
+          item.circle.bringToFront();
+          item.circle.openTooltip();
+        }
+      });
+    }
+
+    // Wipe specific grouping index tags cleanly
+    function unhighlightRequirementByIndex(index) {
+      const req = killRequirements[currentRaidId][index];
+      if (!req) return;
+      currentMapCircles.forEach(item => {
+        let isMatch = false;
+        if (req.exclude && req.exclude.includes(item.name)) return;
+        if (req.matchPartial && item.name.includes(req.name)) isMatch = true;
+        else if (item.name === req.name) isMatch = true;
+        
+        if (isMatch) {
+          item.circle.setRadius(item.baseRadius);
+          item.circle.closeTooltip();
+        }
+      });
+    }
+
+    function clickTrackerRequirement(index) {
+      const req = killRequirements[currentRaidId][index];
+      const mobs = allRaidData[currentRaidId] || [];
+      const progress = getKillProgress();
+      const p = progress[req.name];
+
+      const targetState = (p.current < p.req); 
+
+      let totalMutated = 0;
+      mobs.forEach(mob => {
+        if (req.exclude && req.exclude.includes(mob.name)) return;
+        
+        const isMatch = req.matchPartial ? mob.name.includes(req.name) : mob.name === req.name;
+        if (isMatch) {
+          mob.isDead = targetState;
+          totalMutated++;
+        }
+      });
+
+      if (totalMutated > 0) {
+        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+        clearAllMapHighlights(); 
+        renderMarkers();
+      }
+    }
+
+    // --- 5. RENDER & TRACKER UI ---
     function updateTracker(progress) {
       const listEl = document.getElementById('tracker-list');
       const reqs = killRequirements[currentRaidId];
@@ -359,7 +487,7 @@
       }
 
       let html = '';
-      reqs.forEach(req => {
+      reqs.forEach((req, idx) => {
         const p = progress[req.name];
         const isMet = p.current >= p.req;
         
@@ -369,7 +497,7 @@
         const textDeco = isMet ? 'line-through' : 'none';
 
         html += `
-          <li style="
+          <li class="tracker-item" style="
             background: ${bgColor}; 
             border-left: 4px solid ${borderColor}; 
             padding: 6px 10px; 
@@ -379,7 +507,13 @@
             border-radius: 0 4px 4px 0;
             display: flex;
             justify-content: space-between;
-          ">
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+          "
+          onclick="clickTrackerRequirement(${idx})"
+          onmouseenter="highlightRequirementByIndex(${idx})"
+          onmouseleave="unhighlightRequirementByIndex(${idx})">
             <span>${p.displayName}</span>
             <span style="font-weight:bold;">${p.current} / ${p.req}</span>
           </li>`;
@@ -390,12 +524,10 @@
     function renderMarkers() {
       bossLayer.clearLayers();
       trashLayer.clearLayers();
+      currentMapCircles = []; 
       
       const mobs = allRaidData[currentRaidId] || [];
       const currentProgress = getKillProgress();
-
-      // We will store all the drawn circles here so we can highlight groups later
-      const renderedCircles = [];
 
       mobs.forEach((mob, index) => {
         const coords = wowheadToLeaflet(mob.x, mob.y);
@@ -437,39 +569,56 @@
           .bindTooltip(tooltipContent, { 
             className: 'wow-tooltip', 
             direction: 'top', 
+            permanent: false, 
+            sticky: true,
             offset: [0, -style.radius] 
           })
           .addTo(layer);
 
-        // Store references so we can group highlight them
-        renderedCircles.push({ name: mob.name, circle: circle, baseRadius: style.radius });
-      });
+        currentMapCircles.push({ name: mob.name, circle: circle, baseRadius: style.radius, index: index });
 
-      // Now attach the group hover events
-      renderedCircles.forEach(item => {
-        item.circle.on('mouseover', function(e) {
-          // Find all circles with the exact same mob name and expand them
-          renderedCircles.forEach(other => {
-            if (other.name === item.name) {
-              other.circle.setRadius(other.baseRadius + 4); 
+        // Map Circle Hover Listeners
+        circle.on('mouseover', function(e) {
+          let hotkeyActive = e.originalEvent.ctrlKey || e.originalEvent.shiftKey;
+          let stateChanged = false;
+          
+          if (e.originalEvent.ctrlKey) {
+            if (!mob.isDead) {
+              mob.isDead = true;
+              stateChanged = true;
             }
-          });
+          } 
+          else if (e.originalEvent.shiftKey) {
+            if (mob.isDead) {
+              mob.isDead = false;
+              stateChanged = true;
+            }
+          }
+
+          if (stateChanged) {
+            localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
+            refreshAllMarkersState();
+          }
+
+          // FIX: Only trigger highlight animations/tooltip generation if user is NOT painting kills
+          if (!hotkeyActive) {
+            clearAllMapHighlights();
+            highlightMobsExact(mob.name);
+          } else {
+            // Keep tooltips strictly suppressed when sweeping the map
+            clearAllMapHighlights(); 
+          }
         });
         
-        item.circle.on('mouseout', function(e) {
-          // Reset all circles with the exact same mob name
-          renderedCircles.forEach(other => {
-            if (other.name === item.name) {
-              other.circle.setRadius(other.baseRadius);
-            }
-          });
+        circle.on('mouseout', function(e) {
+          unhighlightMobsExact(mob.name);
         });
       });
       
       updateTracker(currentProgress);
     }
 
-    // --- 5. INTERACTIONS ---
+    // --- 6. INTERACTIONS ---
     map.on('click', function(e) {
       const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
       document.getElementById('coord-x').value = wowheadCoords[0];
@@ -545,7 +694,7 @@
       }
     }
 
-    // --- 6. IMPORT / EXPORT LOGIC ---
+    // --- 7. IMPORT / EXPORT LOGIC ---
     function exportData() {
       const raidData = allRaidData[currentRaidId] || [];
       const dataStr = JSON.stringify(raidData, null, 2);
@@ -587,7 +736,7 @@
       reader.readAsText(file);
     }
 
-    // --- 7. INITIALIZE ---
+    // --- 8. INITIALIZE ---
     switchRaid(); 
   </script>
 </body>
