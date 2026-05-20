@@ -295,7 +295,6 @@
       return [(lng / w) * 100, ((h - lat) / h) * 100];
     }
 
-    // Progress counting calculations
     function getKillProgress() {
       const reqs = killRequirements[currentRaidId];
       const mobs = allRaidData[currentRaidId] || [];
@@ -316,6 +315,7 @@
       return progress;
     }
 
+    // Interactive tracking evaluation logic
     function isMobRequired(mobName, progress) {
       const reqs = killRequirements[currentRaidId];
       if (!reqs) return false;
@@ -398,12 +398,17 @@
       }
     });
 
-    function highlightMobsExact(targetName) {
+    // UPDATED HIGHLIGHT RULES: Groups size scales up together, but only specific element triggers text labels
+    function highlightMobsGroup(targetName, triggerCircle) {
       currentMapCircles.forEach(item => {
         if (item.name === targetName) {
           item.circle.setRadius(item.baseRadius + 4);
           item.circle.bringToFront();
-          item.circle.openTooltip(); 
+          
+          // Only reveal text panel if it matches exact target coordinate element
+          if (item.circle === triggerCircle) {
+            item.circle.openTooltip();
+          }
         }
       });
     }
@@ -429,12 +434,12 @@
         if (isMatch) {
           item.circle.setRadius(item.baseRadius + 4);
           item.circle.bringToFront();
+          // Opens all tooltips only when hovering the checklist menu card specifically
           item.circle.openTooltip();
         }
       });
     }
 
-    // Wipe specific grouping index tags cleanly
     function unhighlightRequirementByIndex(index) {
       const req = killRequirements[currentRaidId][index];
       if (!req) return;
@@ -600,12 +605,12 @@
             refreshAllMarkersState();
           }
 
-          // FIX: Only trigger highlight animations/tooltip generation if user is NOT painting kills
+          // Trigger clear and selective visual panel generation logic
           if (!hotkeyActive) {
             clearAllMapHighlights();
-            highlightMobsExact(mob.name);
+            // Pass the source circle element directly into the group highlighter
+            highlightMobsGroup(mob.name, this);
           } else {
-            // Keep tooltips strictly suppressed when sweeping the map
             clearAllMapHighlights(); 
           }
         });
