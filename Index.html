@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tempest Keep - Dynamic Map Editor</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; background-color: #111; font-family: sans-serif; }
+    #map { width: 100vw; height: 100vh; background-color: #000; cursor: crosshair; }
+    
+    /* The floating Admin Panel */
+    #admin-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(20, 20, 20, 0.9);
+      color: white;
+      padding: 15px;
+      border: 2px solid #553311;
+      border-radius: 8px;
+      z-index: 1000; /* Keeps it above the map */
+      width: 300px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+
+    #admin-panel h3 { margin: 0 0 10px 0; color: #f8b700; }
+    #admin-panel label { display: block; margin-top: 10px; font-size: 12px; color: #ccc;}
+    #admin-panel input, #admin-panel select { width: 100%; padding: 5px; margin-top: 3px; box-sizing: border-box; background: #333; color: white; border: 1px solid #555; }
+    #admin-panel button { width: 100%; padding: 8px; margin-top: 15px; background: #553311; color: white; border: none; cursor: pointer; font-weight: bold; }
+    #admin-panel button:hover { background: #774411; }
+    
+    #clear-data { background: #551111; margin-top: 10px; }
+    #clear-data:hover { background: #771111; }
+
+    .leaflet-popup-content-wrapper { background: #1a1a1a; color: #f8b700; border: 1px solid #553311; }
+    .leaflet-popup-tip { background: #1a1a1a; }
+  </style>
+</head>
+<body>
+
+  <!-- The Map -->
+  <div id="map"></div>
+
+  <!-- The Admin Panel -->
+  <div id="admin-panel">
+    <h3>Add New Mob</h3>
+    <p style="font-size: 12px; margin: 0; color: #aaa;">Click anywhere on the map to auto-fill Wowhead coordinates.</p>
+    
+    <label>Mob Name</label>
+    <input type="text" id="mob-name" placeholder="e.g., Blood Elf Pack">
+
+    <label>Type</label>
+    <select id="mob-type">
+      <option value="boss">Boss</option>
+      <option value="melee">Trash (Melee)</option>
+      <option value="caster">Trash (Caster)</option>
+    </select>
+
+    <label>Wowhead Coords (X, Y)</label>
+    <div style="display: flex; gap: 5px;">
+      <input type="number" id="coord-x" placeholder="X">
+      <input type="number" id="coord-y" placeholder="Y">
+    </div>
+
+    <label>Notes / Strategy</label>
+    <input type="text" id="mob-notes" placeholder="e.g., Interrupt the heal">
+
+    <button onclick="saveMob()">Add to Map</button>
+    <button id="clear-data" onclick="clearData()">Clear All Saved Data</button>
+	<button id="export-data" onclick="exportData()" style="background: #115511; margin-top: 10px;">Export Data for Live Site</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <script>
+    // --- MAP SETUP ---
+    const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
+    const imageWidth = 1002;
+    const imageHeight = 668;
+    const bounds = [[0, 0], [imageHeight, imageWidth]];
+    
+    L.imageOverlay('tempest-keep-map.jpg', bounds).addTo(map);
+    map.fitBounds(bounds);
+
+    // --- ICONS ---
+    const icons = {
+      boss: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] }),
+      melee: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] }),
+      caster: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] })
+    };
+
+    // --- LAYERS ---
+    const bossLayer = L.layerGroup().addTo(map);
+    const trashLayer = L.layerGroup().addTo(map);
+    L.control.layers(null, { "Bosses": bossLayer, "Trash Packs": trashLayer }).addTo(map);
+
+    // --- HELPER: WOWHEAD TO LEAFLET PIXELS ---
+    function wowheadToLeaflet(wowheadX, wowheadY) {
+      const x = (wowheadX / 100) * imageWidth;
+      const y = imageHeight - ((wowheadY / 100) * imageHeight); 
+      return [y, x];
+    }
+
+    // --- HELPER: LEAFLET PIXELS TO WOWHEAD ---
+    function leafletToWowhead(lat, lng) {
+      const wowheadX = (lng / imageWidth) * 100;
+      const wowheadY = ((imageHeight - lat) / imageHeight) * 100;
+      return [wowheadX.toFixed(1), wowheadY.toFixed(1)];
+    }
+
+    // --- CLICK TO AUTO-FILL COORDINATES ---
+    map.on('click', function(e) {
+      const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
+      document.getElementById('coord-x').value = wowheadCoords[0];
+      document.getElementById('coord-y').value = wowheadCoords[1];
+    });
+
+    // --- DATA MANAGEMENT ---
+    let savedMobs = JSON.parse(localStorage.getItem('tempestKeepMobs')) || [];
+
+    function renderMarkers() {
+      // Clear existing markers to prevent duplicates when rendering
+      bossLayer.clearLayers();
+      trashLayer.clearLayers();
+
+      savedMobs.forEach(mob => {
+        const coords = wowheadToLeaflet(mob.x, mob.y);
+        const icon = icons[mob.type];
+        const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
+        
+        L.marker(coords, { icon: icon })
+         .bindPopup(`<b>${mob.name}</b> (${mob.type})<br><hr>${mob.notes}`)
+         .addTo(layer);
+      });
+    }
+
+    function saveMob() {
+      const name = document.getElementById('mob-name').value;
+      const type = document.getElementById('mob-type').value;
+      const x = parseFloat(document.getElementById('coord-x').value);
+      const y = parseFloat(document.getElementById('coord-y').value);
+      const notes = document.getElementById('mob-notes').value;
+
+      if (!name || isNaN(x) || isNaN(y)) {
+        alert("Please enter a name and valid coordinates.");
+        return;
+      }
+
+      // Add to array and save to browser storage
+      savedMobs.push({ name, type, x, y, notes });
+      localStorage.setItem('tempestKeepMobs', JSON.stringify(savedMobs));
+
+      // Clear the form and re-draw the map
+      document.getElementById('mob-name').value = '';
+      document.getElementById('mob-notes').value = '';
+      renderMarkers();
+    }
+
+    function clearData() {
+      if(confirm("Are you sure you want to delete all saved mobs?")) {
+        localStorage.removeItem('tempestKeepMobs');
+        savedMobs = [];
+        renderMarkers();
+      }
+    }
+	function exportData() {
+  // Grab the data from storage
+  const dataStr = localStorage.getItem('tempestKeepMobs') || "[]";
+  
+  // Create a downloadable JSON file in the browser
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  // Create a temporary link and click it to trigger download
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "tempest_keep_mobs.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+    // Initial render on page load
+    renderMarkers();
+  </script>
+</body>
+</html>
