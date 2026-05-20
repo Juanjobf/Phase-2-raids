@@ -394,6 +394,9 @@
       const mobs = allRaidData[currentRaidId] || [];
       const currentProgress = getKillProgress();
 
+      // We will store all the drawn circles here so we can highlight groups later
+      const renderedCircles = [];
+
       mobs.forEach((mob, index) => {
         const coords = wowheadToLeaflet(mob.x, mob.y);
         const isReq = isMobRequired(mob.name, currentProgress);
@@ -438,12 +441,28 @@
           })
           .addTo(layer);
 
-        circle.on('mouseover', function(e) {
-          this.setRadius(style.radius + 4); 
+        // Store references so we can group highlight them
+        renderedCircles.push({ name: mob.name, circle: circle, baseRadius: style.radius });
+      });
+
+      // Now attach the group hover events
+      renderedCircles.forEach(item => {
+        item.circle.on('mouseover', function(e) {
+          // Find all circles with the exact same mob name and expand them
+          renderedCircles.forEach(other => {
+            if (other.name === item.name) {
+              other.circle.setRadius(other.baseRadius + 4); 
+            }
+          });
         });
         
-        circle.on('mouseout', function(e) {
-          this.setRadius(style.radius);
+        item.circle.on('mouseout', function(e) {
+          // Reset all circles with the exact same mob name
+          renderedCircles.forEach(other => {
+            if (other.name === item.name) {
+              other.circle.setRadius(other.baseRadius);
+            }
+          });
         });
       });
       
