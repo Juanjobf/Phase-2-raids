@@ -1,0 +1,1354 @@
+[
+  {
+    "name": "Hydross the Unstable",
+    "type": "boss",
+    "x": 36.52694610778443,
+    "y": 84.58083832335329,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "The Lurker Below",
+    "type": "boss",
+    "x": 40.019960079840324,
+    "y": 58.38323353293413,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Leotheras the Blind",
+    "type": "boss",
+    "x": 41.61676646706587,
+    "y": 25.449101796407188,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Fathom-Lord Karathress",
+    "type": "boss",
+    "x": 50.0998003992016,
+    "y": 17.365269461077844,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Morogrim Tidewalker",
+    "type": "boss",
+    "x": 59.58083832335329,
+    "y": 26.047904191616766,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Lady Vashj",
+    "type": "boss",
+    "x": 72.0558882235529,
+    "y": 58.83233532934131,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Sporebat",
+    "type": "melee",
+    "x": 21.25748502994012,
+    "y": 75.44910179640718,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Sporebat",
+    "type": "melee",
+    "x": 22.929141716566868,
+    "y": 75.22455089820359,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Beast-Tamer",
+    "type": "melee",
+    "x": 22.030938123752495,
+    "y": 75.59880239520959,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Hate-Screamer",
+    "type": "caster",
+    "x": 21.482035928143713,
+    "y": 76.19760479041916,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Hate-Screamer",
+    "type": "caster",
+    "x": 22.45508982035928,
+    "y": 75.93562874251496,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 24.476047904191617,
+    "y": 73.50299401197606,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 27.445109780439118,
+    "y": 78.1062874251497,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Beast-Tamer",
+    "type": "melee",
+    "x": 27.79441117764471,
+    "y": 74.438622754491,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Beast-Tamer",
+    "type": "melee",
+    "x": 29.06686626746507,
+    "y": 82.48502994011976,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Sporebat",
+    "type": "melee",
+    "x": 27.395209580838326,
+    "y": 73.35329341317365,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Sporebat",
+    "type": "melee",
+    "x": 28.118762475049902,
+    "y": 75.78592814371258,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Sporebat",
+    "type": "melee",
+    "x": 28.29341317365269,
+    "y": 82.52245508982035,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Sporebat",
+    "type": "melee",
+    "x": 29.491017964071858,
+    "y": 83.38323353293413,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Hate-Screamer",
+    "type": "caster",
+    "x": 27.47005988023952,
+    "y": 75.33682634730539,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Hate-Screamer",
+    "type": "caster",
+    "x": 27.12075848303393,
+    "y": 74.40119760479041,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Hate-Screamer",
+    "type": "caster",
+    "x": 28.542914171656687,
+    "y": 81.58682634730539,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Hate-Screamer",
+    "type": "caster",
+    "x": 29.665668662674648,
+    "y": 82.55988023952095,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 35.90319361277445,
+    "y": 68.97455089820359,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 36.75149700598803,
+    "y": 69.42365269461078,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 33.05888223552894,
+    "y": 60.291916167664674,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 34.05688622754491,
+    "y": 59.13173652694611,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 34.830339321357286,
+    "y": 49.73802395209581,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 35.95309381237525,
+    "y": 50.33682634730538,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 44.63572854291417,
+    "y": 47.08083832335329,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 44.66067864271457,
+    "y": 49.17664670658682,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 44.535928143712574,
+    "y": 64.82035928143712,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 45.53393213572854,
+    "y": 65.98053892215569,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 47.67964071856288,
+    "y": 56.54940119760479,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Priestess",
+    "type": "caster",
+    "x": 48.902195608782435,
+    "y": 55.613772455089816,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 35.92814371257485,
+    "y": 66.91616766467065,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 37.82435129740519,
+    "y": 68.22604790419162,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 31.811377245508982,
+    "y": 58.60778443113772,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 33.65768463073852,
+    "y": 57.18562874251497,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 35.05489021956088,
+    "y": 47.11826347305389,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 36.75149700598803,
+    "y": 49.02694610778443,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 46.15768463073852,
+    "y": 47.1556886227545,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 45.933133732534934,
+    "y": 49.47604790419162,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 49.700598802395206,
+    "y": 57.63473053892215,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 47.75449101796407,
+    "y": 58.458083832335326,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 43.38822355289421,
+    "y": 66.35479041916167,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 44.88522954091817,
+    "y": 68.03892215568862,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Vashj'ir Honor Guard",
+    "type": "melee",
+    "x": 37.025948103792416,
+    "y": 66.87874251497006,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Vashj'ir Honor Guard",
+    "type": "melee",
+    "x": 32.41017964071856,
+    "y": 57.297904191616766,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Vashj'ir Honor Guard",
+    "type": "melee",
+    "x": 36.07784431137724,
+    "y": 47.717065868263475,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Vashj'ir Honor Guard",
+    "type": "melee",
+    "x": 46.35728542914171,
+    "y": 48.50299401197605,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Vashj'ir Honor Guard",
+    "type": "melee",
+    "x": 48.80239520958084,
+    "y": 58.38323353293413,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Vashj'ir Honor Guard",
+    "type": "melee",
+    "x": 43.8872255489022,
+    "y": 67.47754491017965,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Technician",
+    "type": "melee",
+    "x": 37.949101796407184,
+    "y": 65.6437125748503,
+    "notes": "x4",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Technician",
+    "type": "melee",
+    "x": 31.811377245508982,
+    "y": 56.02544910179641,
+    "notes": "x4",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Technician",
+    "type": "melee",
+    "x": 36.90119760479042,
+    "y": 46.220059880239525,
+    "notes": "x4",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Technician",
+    "type": "melee",
+    "x": 47.70459081836327,
+    "y": 48.69011976047904,
+    "notes": "x4",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Technician",
+    "type": "melee",
+    "x": 49.02694610778443,
+    "y": 60.25449101796407,
+    "notes": "x4",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Technician",
+    "type": "melee",
+    "x": 43.38822355289421,
+    "y": 69.0494011976048,
+    "notes": "x4",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 35.528942115768466,
+    "y": 43.33832335329341,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 43.712574850299404,
+    "y": 41.99101796407186,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 40.29441117764471,
+    "y": 39.52095808383233,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 40.768463073852296,
+    "y": 40.15718562874252,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 41.36726546906188,
+    "y": 39.63323353293413,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 40.89321357285429,
+    "y": 38.959580838323355,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 40.19461077844311,
+    "y": 40.456586826347305,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 41.442115768463076,
+    "y": 40.6437125748503,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 45.45908183632735,
+    "y": 41.95359281437126,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 46.33233532934132,
+    "y": 41.65419161676647,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 45.48403193612774,
+    "y": 41.05538922155689,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 45.958083832335326,
+    "y": 40.75598802395209,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 44.86027944111776,
+    "y": 40.6811377245509,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 45.48403193612774,
+    "y": 40.00748502994012,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 29.515968063872254,
+    "y": 41.130239520958085,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 29.665668662674648,
+    "y": 42.17814371257485,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 30.064870259481037,
+    "y": 41.31736526946108,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 29.81536926147705,
+    "y": 40.38173652694611,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 30.13972055888224,
+    "y": 42.702095808383234,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 30.63872255489022,
+    "y": 41.50449101796407,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 29.540918163672654,
+    "y": 36.90119760479042,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 30.938123752495013,
+    "y": 36.52694610778443,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 29.515968063872254,
+    "y": 37.87425149700599,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 30.988023952095805,
+    "y": 37.387724550898206,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 52.59481037924152,
+    "y": 44.01197604790419,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 53.3433133732535,
+    "y": 43.41317365269461,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 52.794411177644704,
+    "y": 43.33832335329341,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 52.09580838323353,
+    "y": 43.18862275449102,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 53.517964071856284,
+    "y": 42.66467065868264,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 52.519960079840324,
+    "y": 42.290419161676645,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 56.58682634730538,
+    "y": 36.97604790419162,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 57.534930139720565,
+    "y": 38.84730538922156,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 55.78842315369261,
+    "y": 37.612275449101794,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 56.83632734530938,
+    "y": 39.25898203592814,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 58.80738522954092,
+    "y": 36.601796407185624,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 59.73053892215569,
+    "y": 36.75149700598803,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Harpooner",
+    "type": "caster",
+    "x": 59.331337325349295,
+    "y": 37.5,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Depth-Seer",
+    "type": "caster",
+    "x": 59.256487025948104,
+    "y": 35.81586826347306,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Hydromancer",
+    "type": "caster",
+    "x": 60.10479041916168,
+    "y": 35.85329341317365,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 58.532934131736525,
+    "y": 37.4251497005988,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 57.28542914171657,
+    "y": 31.736526946107784,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 58.10878243512973,
+    "y": 31.773952095808383,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 56.811377245508986,
+    "y": 30.950598802395206,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 57.70958083832335,
+    "y": 30.763473053892216,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Hydromancer",
+    "type": "caster",
+    "x": 55.91317365269462,
+    "y": 30.688622754491018,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Hydromancer",
+    "type": "caster",
+    "x": 61.15269461077845,
+    "y": 31.437125748502993,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 61.92614770459082,
+    "y": 31.549401197604794,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 61.377245508982035,
+    "y": 30.202095808383234,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 62.250499001996005,
+    "y": 30.726047904191617,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 62.17564870259481,
+    "y": 29.90269461077844,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 56.53692614770459,
+    "y": 23.053892215568865,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 57.43512974051897,
+    "y": 22.791916167664674,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 56.53692614770459,
+    "y": 22.043413173652695,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 57.46007984031935,
+    "y": 21.744011976047904,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Hydromancer",
+    "type": "caster",
+    "x": 57.035928143712574,
+    "y": 20.696107784431135,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Hydromancer",
+    "type": "caster",
+    "x": 62.225548902195605,
+    "y": 20.733532934131738,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 62.20059880239521,
+    "y": 22.49251497005988,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Shaman",
+    "type": "melee",
+    "x": 61.20259481037924,
+    "y": 22.005988023952096,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 60.95309381237525,
+    "y": 23.16616766467066,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Tidewalker Warrior",
+    "type": "melee",
+    "x": 61.77644710578842,
+    "y": 23.690119760479043,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 59.4311377245509,
+    "y": 16.354790419161677,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 60.22954091816367,
+    "y": 16.27994011976048,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 58.50798403193613,
+    "y": 16.354790419161677,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 58.982035928143716,
+    "y": 17.21556886227545,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 59.830339321357286,
+    "y": 17.252994011976046,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 56.63672654690619,
+    "y": 11.901197604790418,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Fathom-Witch",
+    "type": "caster",
+    "x": 55.938123752495,
+    "y": 10.890718562874252,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 56.287425149700596,
+    "y": 12.836826347305388,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Shatterer",
+    "type": "melee",
+    "x": 54.99001996007984,
+    "y": 11.60179640718563,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Coilfang Serpentguard",
+    "type": "melee",
+    "x": 55.513972055888225,
+    "y": 12.4625748502994,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 51.07285429141717,
+    "y": 14.782934131736528,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 48.003992015968066,
+    "y": 11.639221556886227,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 47.08083832335329,
+    "y": 16.317365269461078,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 43.662674650698605,
+    "y": 12.350299401197605,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Underbog Colossus",
+    "type": "melee",
+    "x": 43.662674650698605,
+    "y": 15.793413173652695,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 40.44411177644711,
+    "y": 17.065868263473057,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 39.64570858283433,
+    "y": 16.130239520958085,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 44.13672654690618,
+    "y": 20.434131736526943,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 43.7624750499002,
+    "y": 21.893712574850298,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 39.64570858283433,
+    "y": 17.477544910179642,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 44.68562874251497,
+    "y": 21.519461077844312,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 45.58383233532935,
+    "y": 26.30988023952096,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 45.134730538922156,
+    "y": 27.095808383233532,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 45.98303393213573,
+    "y": 27.13323353293413,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 44.78542914171656,
+    "y": 27.95658682634731,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 46.18263473053892,
+    "y": 27.88173652694611,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 40.89321357285429,
+    "y": 30.988023952095805,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 40.19461077844311,
+    "y": 30.239520958083833,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 40.94311377245509,
+    "y": 29.977544910179642,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 39.99500998003992,
+    "y": 31.2874251497006,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 41.61676646706587,
+    "y": 31.2125748502994,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 41.641716566866265,
+    "y": 30.08982035928144,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 38.29840319361277,
+    "y": 24.73802395209581,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 35.95309381237525,
+    "y": 28.143712574850298,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 37.5499001996008,
+    "y": 32.297904191616766,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 35.60379241516966,
+    "y": 27.208083832335326,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 35.60379241516966,
+    "y": 28.967065868263475,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 37.075848303393215,
+    "y": 33.23353293413174,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Skulker",
+    "type": "melee",
+    "x": 37.72455089820359,
+    "y": 24.06437125748503,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Shield-Bearer",
+    "type": "melee",
+    "x": 38.84730538922156,
+    "y": 25.37425149700599,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Lurker",
+    "type": "melee",
+    "x": 37.77445109780439,
+    "y": 25.149700598802394,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Serpentshrine Lurker",
+    "type": "melee",
+    "x": 38.647704590818364,
+    "y": 32.18562874251497,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 37.974051896207584,
+    "y": 33.27095808383233,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 38.69760479041916,
+    "y": 33.08383233532935,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 38.34830339321357,
+    "y": 25.97305389221557,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 37.17564870259481,
+    "y": 24.625748502994014,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 36.452095808383234,
+    "y": 29.004491017964074,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 34.3562874251497,
+    "y": 27.694610778443113,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Tidecaller",
+    "type": "caster",
+    "x": 34.2814371257485,
+    "y": 28.967065868263475,
+    "notes": "",
+    "isDead": false
+  },
+  {
+    "name": "Greyheart Nether-Mage",
+    "type": "caster",
+    "x": 33.75748502994012,
+    "y": 28.143712574850298,
+    "notes": "",
+    "isDead": false
+  }
+]
