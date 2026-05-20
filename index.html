@@ -67,6 +67,20 @@
 
     .leaflet-popup-content-wrapper { background: #1a1a1a; color: #f8b700; border: 1px solid #553311; width: 220px; }
     .leaflet-popup-tip { background: #1a1a1a; }
+
+    /* Custom Tooltip Styling */
+    .wow-tooltip {
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid #f8b700;
+      color: #fff;
+      font-weight: bold;
+      font-size: 13px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      white-space: nowrap;
+    }
+    .wow-tooltip.leaflet-tooltip-top:before { border-top-color: #f8b700; }
+    .wow-tooltip.leaflet-tooltip-bottom:before { border-bottom-color: #f8b700; }
   </style>
 </head>
 <body>
@@ -233,6 +247,7 @@
       const strokeColor = isReq ? '#00ffff' : '#000000'; 
       const strokeWidth = isReq ? 3 : 2;
 
+      // Preserving your updated radius values (10 and 4)
       if (mob.type === 'boss') return { color: strokeColor, fillColor: '#ff0000', fillOpacity: 0.9, radius: 10, weight: strokeWidth };
       if (mob.type === 'melee') return { color: strokeColor, fillColor: '#ffaa00', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
       if (mob.type === 'caster') return { color: strokeColor, fillColor: '#aa00ff', fillOpacity: 0.8, radius: 4, weight: strokeWidth };
@@ -317,7 +332,26 @@
             </div>
           </div>
         `;
-        L.circle(coords, style).bindPopup(popupContent).addTo(layer);
+
+        // Draw the circle with bound popup and tooltip
+        const circle = L.circle(coords, style)
+          .bindPopup(popupContent)
+          .bindTooltip(mob.name, { 
+            className: 'wow-tooltip', 
+            direction: 'top', 
+            offset: [0, -style.radius] // Keep tooltip slightly above the circle
+          })
+          .addTo(layer);
+
+        // Hover event: increase radius dynamically
+        circle.on('mouseover', function(e) {
+          this.setRadius(style.radius + 4); // Bumps radius up by 4 when hovered
+        });
+        
+        // Mouse out event: reset radius
+        circle.on('mouseout', function(e) {
+          this.setRadius(style.radius);
+        });
       });
       updateTracker();
     }
