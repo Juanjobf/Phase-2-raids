@@ -68,7 +68,7 @@
 
     <button onclick="saveMob()">Add to Map</button>
     <button id="clear-data" onclick="clearData()">Clear All Saved Data</button>
-	<button id="export-data" onclick="exportData()" style="background: #115511; margin-top: 10px;">Export Data for Live Site</button>
+    <button id="export-data" onclick="exportData()" style="background: #115511; margin-top: 10px;">Export Data for Live Site</button>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -82,13 +82,6 @@
     
     L.imageOverlay('tempest-keep-map.jpg', bounds).addTo(map);
     map.fitBounds(bounds);
-
-    // --- ICONS ---
-    const icons = {
-      boss: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] }),
-      melee: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] }),
-      caster: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] })
-    };
 
     // --- LAYERS ---
     const bossLayer = L.layerGroup().addTo(map);
@@ -109,6 +102,18 @@
       return [wowheadX.toFixed(1), wowheadY.toFixed(1)];
     }
 
+    // --- CIRCLE STYLING ---
+    function getCircleStyle(type) {
+      if (type === 'boss') {
+        return { color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.8, radius: 10, weight: 2 };
+      } else if (type === 'melee') {
+        return { color: '#ffaa00', fillColor: '#ffaa00', fillOpacity: 0.6, radius: 4, weight: 2 };
+      } else if (type === 'caster') {
+        return { color: '#aa00ff', fillColor: '#aa00ff', fillOpacity: 0.6, radius: 4, weight: 2 };
+      }
+      return { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.6, radius: 4, weight: 2 };
+    }
+
     // --- CLICK TO AUTO-FILL COORDINATES ---
     map.on('click', function(e) {
       const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
@@ -126,10 +131,11 @@
 
       savedMobs.forEach(mob => {
         const coords = wowheadToLeaflet(mob.x, mob.y);
-        const icon = icons[mob.type];
+        const style = getCircleStyle(mob.type);
         const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
         
-        L.marker(coords, { icon: icon })
+        // Draw the scaling circles
+        L.circle(coords, style)
          .bindPopup(`<b>${mob.name}</b> (${mob.type})<br><hr>${mob.notes}`)
          .addTo(layer);
       });
@@ -164,23 +170,24 @@
         renderMarkers();
       }
     }
-	function exportData() {
-  // Grab the data from storage
-  const dataStr = localStorage.getItem('tempestKeepMobs') || "[]";
-  
-  // Create a downloadable JSON file in the browser
-  const blob = new Blob([dataStr], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  
-  // Create a temporary link and click it to trigger download
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = "tempest_keep_mobs.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+
+    function exportData() {
+      // Grab the data from storage
+      const dataStr = localStorage.getItem('tempestKeepMobs') || "[]";
+      
+      // Create a downloadable JSON file in the browser
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      
+      // Create a temporary link and click it to trigger download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "tempest_keep_mobs.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
     // Initial render on page load
     renderMarkers();
