@@ -9,8 +9,40 @@
     body, html { margin: 0; padding: 0; height: 100%; background-color: #111; font-family: sans-serif; }
     #map { width: 100vw; height: 100vh; background-color: #000; cursor: crosshair; }
     
-    /* Admin Panel */
-    #admin-panel {
+    /* Top Drawing Toolbar */
+    #drawing-toolbar {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(20, 20, 20, 0.9);
+      padding: 10px;
+      border: 2px solid #553311;
+      border-radius: 8px;
+      display: flex;
+      gap: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+    #drawing-toolbar button {
+      background: #333;
+      border: 1px solid #555;
+      color: white;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 4px;
+      transition: 0.2s;
+    }
+    #drawing-toolbar button.active {
+      background: #553311;
+      border-color: #f8b700;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+    }
+    .number-icon { background: transparent; border: none; }
+
+    /* Utility Panel (Always Visible) */
+    #utility-panel {
       position: absolute;
       bottom: 20px;
       left: 20px;
@@ -20,8 +52,26 @@
       border: 2px solid #553311;
       border-radius: 8px;
       z-index: 1000; 
-      width: 300px;
+      width: 280px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+    #utility-panel button { width: 100%; padding: 8px; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 3px; }
+    #utility-panel button:hover { filter: brightness(1.2); }
+
+    /* Admin Panel (Hidden by Default) */
+    #admin-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 330px; 
+      background: rgba(20, 20, 20, 0.9);
+      color: white;
+      padding: 15px;
+      border: 2px solid #553311;
+      border-radius: 8px;
+      z-index: 1000; 
+      width: 250px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+      display: none;
     }
     #admin-panel h3 { margin: 0 0 10px 0; color: #f8b700; }
     #admin-panel label { display: block; margin-top: 10px; font-size: 12px; color: #ccc;}
@@ -47,12 +97,13 @@
     }
     #tracker-panel h3 { margin: 0 0 10px 0; color: #f8b700; border-bottom: 1px solid #553311; padding-bottom: 5px; }
     #tracker-list { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+    .tracker-item:hover { filter: brightness(1.2); }
 
     /* Raid Selector */
     #raid-selector {
       position: absolute;
       top: 20px;
-      left: 50px;
+      left: 20px;
       z-index: 1000;
       background: rgba(20, 20, 20, 0.9);
       padding: 10px;
@@ -82,8 +133,6 @@
     }
     .wow-tooltip.leaflet-tooltip-top:before { border-top-color: #f8b700; }
     .wow-tooltip.leaflet-tooltip-bottom:before { border-bottom-color: #f8b700; }
-
-    .tracker-item:hover { filter: brightness(1.2); }
   </style>
 </head>
 <body>
@@ -93,6 +142,15 @@
     <select id="active-raid" onchange="switchRaid()"></select>
   </div>
 
+  <div id="drawing-toolbar">
+    <button id="btn-draw-red" onclick="setTool('draw-red')" style="color:#ff4444;">✏️ Red</button>
+    <button id="btn-draw-blue" onclick="setTool('draw-blue')" style="color:#00ffff;">✏️ Blue</button>
+    <button id="btn-draw-green" onclick="setTool('draw-green')" style="color:lime;">✏️ Green</button>
+    <div style="border-left: 2px solid #553311; margin: 0 5px;"></div>
+    <button id="btn-number" onclick="setTool('number')" style="color:#f8b700;">🔢 Numbers</button>
+    <button onclick="clearDrawings()" style="color:#aaa;">🗑️ Clear Ink</button>
+  </div>
+
   <div id="map"></div>
 
   <div id="tracker-panel">
@@ -100,13 +158,31 @@
     <ul id="tracker-list"></ul>
   </div>
 
+  <div id="utility-panel">
+    <p style="font-size: 11px; margin: 0 0 10px 0; color: #00ffff; font-weight: bold; text-align: center;">💡 Sweep map with Ctrl to Kill, Shift to Revive</p>
+    
+    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+      <button onclick="clearData()" style="background: #551111; flex: 1;">Clear Map</button>
+      <button onclick="resetToDefault()" style="background: #aa5500; flex: 1;">Defaults</button>
+    </div>
+    
+    <button onclick="markAllAlive()" style="background: #224466; margin-bottom: 10px; width: 100%;">Mark All Mobs Alive</button>
+    
+    <div style="display: flex; gap: 5px;">
+      <button id="export-btn" onclick="exportData()" style="background: #115511; flex: 1;">Export Raid</button>
+      <button onclick="document.getElementById('file-input').click()" style="background: #111155; flex: 1;">Import Raid</button>
+    </div>
+    <input type="file" id="file-input" style="display: none;" accept=".json" onchange="importData(event)">
+
+    <button onclick="toggleAdmin()" style="margin-top: 10px; background: #333; border: 1px solid #555;">➕ Add / Edit Mobs</button>
+  </div>
+
   <div id="admin-panel">
-    <h3>Add / Edit Mob</h3>
-    <p style="font-size: 12px; margin: 0; color: #aaa;">Click anywhere on the map to auto-fill Wowhead coordinates.</p>
-    <p style="font-size: 11px; margin: 4px 0 0 0; color: #00ffff; font-weight: bold;">💡 Sweep map with Ctrl held to Kill, Shift to Revive!</p>
+    <h3>Mob Editor</h3>
+    <p style="font-size: 11px; margin: 0; color: #aaa;">Click map to auto-fill coords.</p>
     
     <label>Mob Name</label>
-    <input type="search" id="mob-name" list="raid-mobs" placeholder="Start typing a mob name..." onfocus="this.select()">
+    <input type="search" id="mob-name" list="raid-mobs" placeholder="Start typing..." onfocus="this.select()">
     <datalist id="raid-mobs"></datalist>
 
     <label>Type</label>
@@ -116,7 +192,7 @@
       <option value="caster">Trash (Caster)</option>
     </select>
 
-    <label>Wowhead Coords (X, Y)</label>
+    <label>Coords (X, Y)</label>
     <div style="display: flex; gap: 5px;">
       <input type="number" id="coord-x" placeholder="X">
       <input type="number" id="coord-y" placeholder="Y">
@@ -127,19 +203,6 @@
 
     <button id="save-btn" onclick="saveMob()">Add to Map</button>
     <button id="cancel-btn" onclick="cancelEdit()" style="display:none; background:#555; margin-top:5px;">Cancel Update</button>
-    
-    <div style="display: flex; gap: 5px; margin-top: 10px;">
-      <button id="clear-data" onclick="clearData()" style="background: #551111; flex: 1; margin-top:0;">Clear Map</button>
-      <button id="reset-data" onclick="resetToDefault()" style="background: #aa5500; flex: 1; margin-top:0;">Load Defaults</button>
-    </div>
-    
-    <button id="alive-all-data" onclick="markAllAlive()" style="background: #224466; margin-top: 5px; width: 100%;">Mark All Mobs Alive</button>
-    
-    <div style="display: flex; gap: 5px; margin-top: 5px;">
-      <button id="export-btn" onclick="exportData()" style="background: #115511; flex: 1; margin-top:0;">Export Raid</button>
-      <button id="import-btn" onclick="document.getElementById('file-input').click()" style="background: #111155; flex: 1; margin-top:0;">Import Raid</button>
-    </div>
-    <input type="file" id="file-input" style="display: none;" accept=".json" onchange="importData(event)">
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -148,54 +211,25 @@
     // --- 1. CONFIGURATION ---
     const raids = {
       "tempest-keep": { 
-        name: "Tempest Keep", 
-        image: "tempest-keep-map.jpg", 
-        width: 1002, 
-        height: 668,
+        name: "Tempest Keep", image: "tempest-keep-map.jpg", width: 1002, height: 668,
         mobs: [
-          "Al'ar", "Void Reaver", "High Astromancer Solarian", "Kael'thas Sunstrider",
-          "Astromancer Lord", "Bloodwarder Legionnaire", "Bloodwarder Marshal", "Bloodwarder Squire", "Bloodwarder Vindicator",
-          "Crimson Hand Blood Knight", "Crimson Hand Centurion", "Crimson Hand Inquisitor", "Crimson Hand Battle Mage",
-          "Crystalcore Devastator", "Crystalcore Sentinel", "Nether Scryer", "Phoenix-Hawk", "Tempest Falconer",
-          "Novice Astromancer", "Tempest Smith", "Crystalcore Mechanic"
+          "Al'ar", "Void Reaver", "High Astromancer Solarian", "Kael'thas Sunstrider", "Astromancer Lord", "Bloodwarder Legionnaire", "Bloodwarder Marshal", "Bloodwarder Squire", "Bloodwarder Vindicator", "Crimson Hand Blood Knight", "Crimson Hand Centurion", "Crimson Hand Inquisitor", "Crimson Hand Battle Mage", "Crystalcore Devastator", "Crystalcore Sentinel", "Nether Scryer", "Phoenix-Hawk", "Tempest Falconer", "Novice Astromancer", "Tempest Smith", "Crystalcore Mechanic"
         ]
       },
       "ssc": { 
-        name: "Serpentshrine Cavern", 
-        image: "ssc-map.jpg", 
-        width: 1002, 
-        height: 668,
+        name: "Serpentshrine Cavern", image: "ssc-map.jpg", width: 1002, height: 668,
         mobs: [
-          "Hydross the Unstable", "The Lurker Below", "Leotheras the Blind", "Fathom-Lord Karathress", "Morogrim Tidewalker", "Lady Vashj",
-          "Underbog Colossus", "Coilfang Shatterer", "Greyheart Tidecaller", "Coilfang Fathom-Witch", "Vashj'ir Honor Guard",
-          "Tidewalker Depth-Seer", "Tidewalker Harpooner", "Tidewalker Hydromancer", "Tidewalker Shaman", "Tidewalker Warrior",
-          "Tidewalker Lurker", "Greyheart Nether-Mage", "Greyheart Skulker", "Coilfang Priestess", "Coilfang Strider", 
-          "Coilfang Frenzy", "Coilfang Serpentguard", "Serpentshrine Sporebat", "Serpentshrine Lurker", 
-          "Tainted Water Elemental", "Pure Water Elemental", "Coilfang Hate-Screamer", "Coilfang Beast-Tamer", "Greyheart Technician", "Greyheart Shield-Bearer"
+          "Hydross the Unstable", "The Lurker Below", "Leotheras the Blind", "Fathom-Lord Karathress", "Morogrim Tidewalker", "Lady Vashj", "Underbog Colossus", "Coilfang Shatterer", "Greyheart Tidecaller", "Coilfang Fathom-Witch", "Vashj'ir Honor Guard", "Tidewalker Depth-Seer", "Tidewalker Harpooner", "Tidewalker Hydromancer", "Tidewalker Shaman", "Tidewalker Warrior", "Tidewalker Lurker", "Greyheart Nether-Mage", "Greyheart Skulker", "Coilfang Priestess", "Coilfang Strider", "Coilfang Frenzy", "Coilfang Serpentguard", "Serpentshrine Sporebat", "Serpentshrine Lurker", "Tainted Water Elemental", "Pure Water Elemental", "Coilfang Hate-Screamer", "Coilfang Beast-Tamer", "Greyheart Technician", "Greyheart Shield-Bearer"
         ]
       }
     };
 
     const killRequirements = {
       "tempest-keep": [
-        { name: "Bloodwarder Legionnaire", req: 11 },
-        { name: "Bloodwarder Vindicator", req: 3 },
-        { name: "Bloodwarder Squire", req: 12 },
-        { name: "Tempest Falconer", req: 4 },
-        { name: "Phoenix-Hawk", req: 4 },
-        { name: "Crystalcore Devastator", req: 4 },
-        { name: "Crystalcore Sentinel", req: 10 },
-        { name: "Astromancer Lord", req: 1 },
-        { name: "Nether Scryer", req: 2 },
-        { name: "Crimson Hand Battle Mage", req: 4 }
+        { name: "Bloodwarder Legionnaire", req: 11 }, { name: "Bloodwarder Vindicator", req: 3 }, { name: "Bloodwarder Squire", req: 12 }, { name: "Tempest Falconer", req: 4 }, { name: "Phoenix-Hawk", req: 4 }, { name: "Crystalcore Devastator", req: 4 }, { name: "Crystalcore Sentinel", req: 10 }, { name: "Astromancer Lord", req: 1 }, { name: "Nether Scryer", req: 2 }, { name: "Crimson Hand Battle Mage", req: 4 }
       ],
       "ssc": [
-        { name: "Underbog Colossus", req: 6 },
-        { name: "Coilfang Shatterer", req: 14 },
-        { name: "Greyheart Tidecaller", req: 16 },
-        { name: "Coilfang Fathom-Witch", req: 6 },
-        { name: "Vashj'ir Honor Guard", req: 6 },
-        { name: "Tidewalker", matchPartial: true, exclude: ["Morogrim Tidewalker"], req: 20, displayName: "Tidewalker (Any)" } 
+        { name: "Underbog Colossus", req: 6 }, { name: "Coilfang Shatterer", req: 14 }, { name: "Greyheart Tidecaller", req: 16 }, { name: "Coilfang Fathom-Witch", req: 6 }, { name: "Vashj'ir Honor Guard", req: 6 }, { name: "Tidewalker", matchPartial: true, exclude: ["Morogrim Tidewalker"], req: 20, displayName: "Tidewalker (Any)" } 
       ]
     };
 
@@ -204,27 +238,102 @@
     let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
     let currentMapCircles = []; 
 
-    // --- 2. MAP SETUP ---
+    function toggleAdmin() {
+      const panel = document.getElementById('admin-panel');
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // --- 2. MAP & DRAWING SETUP ---
     const map = L.map('map', { crs: L.CRS.Simple, minZoom: -1, maxZoom: 2 });
     let currentImageOverlay = null;
 
     const bossLayer = L.layerGroup().addTo(map);
     const trashLayer = L.layerGroup().addTo(map);
-    L.control.layers(null, { "Bosses": bossLayer, "Trash Packs": trashLayer }).addTo(map);
+    
+    // Drawing Variables
+    let drawnLayers = L.layerGroup().addTo(map);
+    let activeTool = null;
+    let isDrawing = false;
+    let currentPolyline = null;
+    let numberCounter = 1;
 
+    // Toggles the drawing tools AND makes the circles ghosted so popups don't trigger!
+    function setTool(tool) {
+      if (activeTool === tool) {
+        activeTool = null; 
+      } else {
+        activeTool = tool;
+      }
+      
+      document.querySelectorAll('#drawing-toolbar button').forEach(btn => btn.classList.remove('active'));
+      if (activeTool) {
+        document.getElementById(`btn-${activeTool}`).classList.add('active');
+      }
+
+      if (activeTool && activeTool.startsWith('draw')) {
+        map.dragging.disable();
+      } else {
+        map.dragging.enable();
+      }
+
+      // Re-render markers instantly applies the "ghosting" interactive rules
+      renderMarkers();
+    }
+
+    function clearDrawings() {
+      drawnLayers.clearLayers();
+      numberCounter = 1;
+    }
+
+    // Drawing Events
+    map.on('mousedown', function(e) {
+      if (!activeTool || !activeTool.startsWith('draw')) return;
+      isDrawing = true;
+      let color = '#ff4444';
+      if (activeTool === 'draw-blue') color = '#00ffff';
+      if (activeTool === 'draw-green') color = 'lime';
+      
+      currentPolyline = L.polyline([e.latlng], {color: color, weight: 4, smoothFactor: 1}).addTo(drawnLayers);
+    });
+
+    map.on('mousemove', function(e) {
+      if (!isDrawing || !currentPolyline) return;
+      currentPolyline.addLatLng(e.latlng);
+    });
+
+    map.on('mouseup', function(e) {
+      isDrawing = false;
+      currentPolyline = null;
+    });
+
+    map.on('click', function(e) {
+      if (activeTool === 'number') {
+        let icon = L.divIcon({
+          className: 'number-icon',
+          html: `<div style="background:red; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-weight:bold; border: 2px solid white; box-shadow: 0 0 4px #000;">${numberCounter}</div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+        L.marker(e.latlng, {icon: icon, interactive: false}).addTo(drawnLayers);
+        numberCounter++;
+      } else if (!activeTool) {
+        const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
+        document.getElementById('coord-x').value = wowheadCoords[0];
+        document.getElementById('coord-y').value = wowheadCoords[1];
+      }
+    });
+
+    // --- 3. CORE RAID LOGIC ---
     const raidSelect = document.getElementById('active-raid');
     for (const [id, data] of Object.entries(raids)) {
       const option = document.createElement('option');
-      option.value = id;
-      option.textContent = data.name;
+      option.value = id; option.textContent = data.name;
       raidSelect.appendChild(option);
     }
 
-    // --- 3. CORE LOGIC ---
     async function switchRaid() {
       currentRaidId = document.getElementById('active-raid').value;
       const config = raids[currentRaidId];
-
       const bounds = [[0, 0], [config.height, config.width]];
       if (currentImageOverlay) map.removeLayer(currentImageOverlay);
       currentImageOverlay = L.imageOverlay(config.image, bounds).addTo(map);
@@ -234,31 +343,19 @@
       if (!allRaidData[currentRaidId]) {
         try {
           const response = await fetch(`${currentRaidId}_mobs.json`);
-          if (response.ok) {
-            allRaidData[currentRaidId] = await response.json();
-          } else {
-            allRaidData[currentRaidId] = []; 
-          }
-        } catch (error) {
-          allRaidData[currentRaidId] = [];
-        }
+          if (response.ok) { allRaidData[currentRaidId] = await response.json(); } 
+          else { allRaidData[currentRaidId] = []; }
+        } catch (error) { allRaidData[currentRaidId] = []; }
       }
 
       renderMarkers();
-
-      document.getElementById('export-btn').textContent = "Export " + config.name;
-      document.getElementById('import-btn').textContent = "Import " + config.name;
       
       const datalist = document.getElementById('raid-mobs');
       datalist.innerHTML = ''; 
-      
-      const sortedMobs = [...config.mobs].sort();
-      sortedMobs.forEach(mobName => {
+      [...config.mobs].sort().forEach(mobName => {
         const option = document.createElement('option');
-        option.value = mobName;
-        datalist.appendChild(option);
+        option.value = mobName; datalist.appendChild(option);
       });
-      
       document.getElementById('mob-name').value = '';
     }
 
@@ -273,39 +370,31 @@
     function markAllAlive() {
       const mobs = allRaidData[currentRaidId] || [];
       if (mobs.length === 0) return;
-      
       if(confirm(`Mark all mobs in ${raids[currentRaidId].name} as alive?`)) {
-        mobs.forEach(mob => {
-          mob.isDead = false;
-        });
+        mobs.forEach(mob => mob.isDead = false);
         localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
         renderMarkers();
       }
     }
 
     function wowheadToLeaflet(wowheadX, wowheadY) {
-      const w = raids[currentRaidId].width;
-      const h = raids[currentRaidId].height;
+      const w = raids[currentRaidId].width, h = raids[currentRaidId].height;
       return [h - ((wowheadY / 100) * h), (wowheadX / 100) * w];
     }
 
     function leafletToWowhead(lat, lng) {
-      const w = raids[currentRaidId].width;
-      const h = raids[currentRaidId].height;
+      const w = raids[currentRaidId].width, h = raids[currentRaidId].height;
       return [(lng / w) * 100, ((h - lat) / h) * 100];
     }
 
     function getKillProgress() {
-      const reqs = killRequirements[currentRaidId];
-      const mobs = allRaidData[currentRaidId] || [];
+      const reqs = killRequirements[currentRaidId], mobs = allRaidData[currentRaidId] || [];
       let progress = {};
       if (!reqs) return progress;
-      
       reqs.forEach(req => {
         let deadCount = 0;
         mobs.forEach(mob => {
-          if (mob.isDead) {
-            if (req.exclude && req.exclude.includes(mob.name)) return;
+          if (mob.isDead && !(req.exclude && req.exclude.includes(mob.name))) {
             if (req.matchPartial && mob.name.includes(req.name)) deadCount++;
             else if (mob.name === req.name) deadCount++;
           }
@@ -315,48 +404,33 @@
       return progress;
     }
 
-    // Interactive tracking evaluation logic
     function isMobRequired(mobName, progress) {
       const reqs = killRequirements[currentRaidId];
       if (!reqs) return false;
       return reqs.some(r => {
         if (r.exclude && r.exclude.includes(mobName)) return false;
-        
         let isMatch = r.matchPartial ? mobName.includes(r.name) : mobName === r.name;
-        if (isMatch) {
-          if (progress[r.name] && progress[r.name].current < progress[r.name].req) {
-            return true;
-          }
-        }
-        return false;
+        return isMatch && (progress[r.name] && progress[r.name].current < progress[r.name].req);
       });
     }
 
     function getCircleStyle(mob, isReq) {
-      const radius = (mob.type === 'boss') ? 10 : 4;
-      const strokeWidth = isReq ? 3 : 2;
-
-      if (mob.isDead) {
-        return { color: isReq ? '#004444' : '#222', fillColor: '#111', fillOpacity: 0.6, radius: radius, weight: strokeWidth };
-      }
-
+      const radius = (mob.type === 'boss') ? 10 : 4, strokeWidth = isReq ? 3 : 2;
+      if (mob.isDead) return { color: isReq ? '#004444' : '#222', fillColor: '#111', fillOpacity: 0.6, radius: radius, weight: strokeWidth };
       const strokeColor = isReq ? '#00ffff' : '#000000'; 
-
       if (mob.type === 'boss') return { color: strokeColor, fillColor: '#ff0000', fillOpacity: 0.9, radius: radius, weight: strokeWidth };
       if (mob.type === 'melee') return { color: strokeColor, fillColor: '#ffaa00', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
       if (mob.type === 'caster') return { color: strokeColor, fillColor: '#aa00ff', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
       return { color: strokeColor, fillColor: '#ffffff', fillOpacity: 0.8, radius: radius, weight: strokeWidth };
     }
 
-    // --- 4. DYNAMIC HOVER & RE-STYLING LOGIC ---
+    // --- 4. MAP VISUAL REFRESHES ---
     function refreshAllMarkersState() {
       const currentProgress = getKillProgress();
-      
       currentMapCircles.forEach(item => {
         const mob = allRaidData[currentRaidId][item.index];
         const isReq = isMobRequired(mob.name, currentProgress);
         const style = getCircleStyle(mob, isReq);
-        
         item.circle.setStyle(style);
         item.baseRadius = style.radius; 
 
@@ -380,49 +454,42 @@
         `;
         item.circle.setPopupContent(popupContent);
       });
-      
       updateTracker(currentProgress);
     }
 
     function clearAllMapHighlights() {
-      currentMapCircles.forEach(item => {
-        item.circle.setRadius(item.baseRadius);
-        item.circle.closeTooltip();
-      });
+      currentMapCircles.forEach(item => { item.circle.setRadius(item.baseRadius); item.circle.closeTooltip(); });
     }
 
     document.addEventListener('keyup', function(e) {
-      if (e.key === 'Control' || e.key === 'Shift') {
-        refreshAllMarkersState();
-        clearAllMapHighlights();
+      if (e.key === 'Control' || e.key === 'Shift') { 
+        if (activeTool) return; // Don't interrupt hotkeys if drawing
+        refreshAllMarkersState(); 
+        clearAllMapHighlights(); 
       }
     });
 
-    // UPDATED HIGHLIGHT RULES: Groups size scales up together, but only specific element triggers text labels
     function highlightMobsGroup(targetName, triggerCircle) {
+      if (activeTool) return; // Safegaurd to stop tooltips if drawing
       currentMapCircles.forEach(item => {
         if (item.name === targetName) {
           item.circle.setRadius(item.baseRadius + 4);
           item.circle.bringToFront();
-          
-          // Only reveal text panel if it matches exact target coordinate element
-          if (item.circle === triggerCircle) {
-            item.circle.openTooltip();
-          }
+          if (item.circle === triggerCircle) item.circle.openTooltip();
         }
       });
     }
 
     function unhighlightMobsExact(targetName) {
+      if (activeTool) return;
       currentMapCircles.forEach(item => {
-        if (item.name === targetName) {
-          item.circle.setRadius(item.baseRadius);
-          item.circle.closeTooltip();
-        }
+        if (item.name === targetName) { item.circle.setRadius(item.baseRadius); item.circle.closeTooltip(); }
       });
     }
 
+    // List Hover - Specifically excludes opening tooltips
     function highlightRequirementByIndex(index) {
+      if (activeTool) return;
       const req = killRequirements[currentRaidId][index];
       if (!req) return;
       currentMapCircles.forEach(item => {
@@ -434,13 +501,12 @@
         if (isMatch) {
           item.circle.setRadius(item.baseRadius + 4);
           item.circle.bringToFront();
-          // Opens all tooltips only when hovering the checklist menu card specifically
-          item.circle.openTooltip();
         }
       });
     }
 
     function unhighlightRequirementByIndex(index) {
+      if (activeTool) return;
       const req = killRequirements[currentRaidId][index];
       if (!req) return;
       currentMapCircles.forEach(item => {
@@ -451,74 +517,40 @@
         
         if (isMatch) {
           item.circle.setRadius(item.baseRadius);
-          item.circle.closeTooltip();
         }
       });
     }
 
     function clickTrackerRequirement(index) {
-      const req = killRequirements[currentRaidId][index];
-      const mobs = allRaidData[currentRaidId] || [];
-      const progress = getKillProgress();
-      const p = progress[req.name];
-
+      const req = killRequirements[currentRaidId][index], mobs = allRaidData[currentRaidId] || [], progress = getKillProgress(), p = progress[req.name];
       const targetState = (p.current < p.req); 
 
       let totalMutated = 0;
       mobs.forEach(mob => {
         if (req.exclude && req.exclude.includes(mob.name)) return;
-        
         const isMatch = req.matchPartial ? mob.name.includes(req.name) : mob.name === req.name;
-        if (isMatch) {
-          mob.isDead = targetState;
-          totalMutated++;
-        }
+        if (isMatch) { mob.isDead = targetState; totalMutated++; }
       });
 
-      if (totalMutated > 0) {
-        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-        clearAllMapHighlights(); 
-        renderMarkers();
-      }
+      if (totalMutated > 0) { localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); clearAllMapHighlights(); renderMarkers(); }
     }
 
     // --- 5. RENDER & TRACKER UI ---
     function updateTracker(progress) {
       const listEl = document.getElementById('tracker-list');
       const reqs = killRequirements[currentRaidId];
-      if (!reqs) {
-        listEl.innerHTML = "<li style='color:#777'>No requirements set for this raid.</li>";
-        return;
-      }
+      if (!reqs) { listEl.innerHTML = "<li style='color:#777'>No requirements set for this raid.</li>"; return; }
 
       let html = '';
       reqs.forEach((req, idx) => {
         const p = progress[req.name];
         const isMet = p.current >= p.req;
         
-        const bgColor = isMet ? '#1a1a1a' : '#2a2a2a';
-        const borderColor = isMet ? '#115511' : '#f8b700'; 
-        const textColor = isMet ? '#555' : '#eee'; 
-        const textDeco = isMet ? 'line-through' : 'none';
-
+        const bgColor = isMet ? '#1a1a1a' : '#2a2a2a', borderColor = isMet ? '#115511' : '#f8b700', textColor = isMet ? '#555' : '#eee', textDeco = isMet ? 'line-through' : 'none';
         html += `
           <li class="tracker-item" style="
-            background: ${bgColor}; 
-            border-left: 4px solid ${borderColor}; 
-            padding: 6px 10px; 
-            margin-bottom: 6px; 
-            color: ${textColor}; 
-            text-decoration: ${textDeco}; 
-            border-radius: 0 4px 4px 0;
-            display: flex;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-          "
-          onclick="clickTrackerRequirement(${idx})"
-          onmouseenter="highlightRequirementByIndex(${idx})"
-          onmouseleave="unhighlightRequirementByIndex(${idx})">
+            background: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 6px 10px; margin-bottom: 6px; color: ${textColor}; text-decoration: ${textDeco}; border-radius: 0 4px 4px 0; display: flex; justify-content: space-between; cursor: pointer; transition: all 0.2s ease; user-select: none;
+          " onclick="clickTrackerRequirement(${idx})" onmouseenter="highlightRequirementByIndex(${idx})" onmouseleave="unhighlightRequirementByIndex(${idx})">
             <span>${p.displayName}</span>
             <span style="font-weight:bold;">${p.current} / ${p.req}</span>
           </li>`;
@@ -537,11 +569,15 @@
       mobs.forEach((mob, index) => {
         const coords = wowheadToLeaflet(mob.x, mob.y);
         const isReq = isMobRequired(mob.name, currentProgress);
-        const style = getCircleStyle(mob, isReq);
+        
+        // Setup base style
+        let style = getCircleStyle(mob, isReq);
+        // CRITICAL UPDATE: If an active drawing tool is selected, force circles to ignore mouse events
+        style.interactive = !activeTool;
+
         const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
         
         const reqLabel = isReq && !mob.isDead ? `<div style="color:#00ffff; font-size:10px; font-weight:bold; margin-bottom:4px;">⭐ REQUIRED KILL</div>` : '';
-
         const popupContent = `
           <div style="text-align:center; margin-bottom: 8px;">
             ${reqLabel}
@@ -561,187 +597,78 @@
         `;
 
         const tooltipContent = mob.notes 
-          ? `<div style="text-align: center;">
-              <div><b>${mob.name}</b></div>
-              <div style="font-weight: normal; font-size: 11px; color: #ccc; border-top: 1px solid #553311; margin-top: 4px; padding-top: 2px;">
-                ${mob.notes}
-              </div>
-             </div>`
+          ? `<div style="text-align: center;"><div><b>${mob.name}</b></div><div style="font-weight: normal; font-size: 11px; color: #ccc; border-top: 1px solid #553311; margin-top: 4px; padding-top: 2px;">${mob.notes}</div></div>`
           : `<b>${mob.name}</b>`;
 
         const circle = L.circle(coords, style)
           .bindPopup(popupContent)
-          .bindTooltip(tooltipContent, { 
-            className: 'wow-tooltip', 
-            direction: 'top', 
-            permanent: false, 
-            sticky: true,
-            offset: [0, -style.radius] 
-          })
+          .bindTooltip(tooltipContent, { className: 'wow-tooltip', direction: 'top', permanent: false, sticky: true, offset: [0, -style.radius] })
           .addTo(layer);
 
         currentMapCircles.push({ name: mob.name, circle: circle, baseRadius: style.radius, index: index });
 
-        // Map Circle Hover Listeners
         circle.on('mouseover', function(e) {
+          if (activeTool) return; // Total fail-safe
+
           let hotkeyActive = e.originalEvent.ctrlKey || e.originalEvent.shiftKey;
           let stateChanged = false;
           
-          if (e.originalEvent.ctrlKey) {
-            if (!mob.isDead) {
-              mob.isDead = true;
-              stateChanged = true;
-            }
-          } 
-          else if (e.originalEvent.shiftKey) {
-            if (mob.isDead) {
-              mob.isDead = false;
-              stateChanged = true;
-            }
-          }
+          if (e.originalEvent.ctrlKey) { if (!mob.isDead) { mob.isDead = true; stateChanged = true; } } 
+          else if (e.originalEvent.shiftKey) { if (mob.isDead) { mob.isDead = false; stateChanged = true; } }
 
-          if (stateChanged) {
-            localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-            refreshAllMarkersState();
-          }
+          if (stateChanged) { localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); refreshAllMarkersState(); }
 
-          // Trigger clear and selective visual panel generation logic
-          if (!hotkeyActive) {
-            clearAllMapHighlights();
-            // Pass the source circle element directly into the group highlighter
-            highlightMobsGroup(mob.name, this);
-          } else {
-            clearAllMapHighlights(); 
-          }
+          if (!hotkeyActive) { clearAllMapHighlights(); highlightMobsGroup(mob.name, this); } 
+          else { clearAllMapHighlights(); }
         });
         
-        circle.on('mouseout', function(e) {
-          unhighlightMobsExact(mob.name);
+        circle.on('mouseout', function(e) { 
+          if (activeTool) return;
+          unhighlightMobsExact(mob.name); 
         });
       });
       
       updateTracker(currentProgress);
     }
 
-    // --- 6. INTERACTIONS ---
-    map.on('click', function(e) {
-      const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
-      document.getElementById('coord-x').value = wowheadCoords[0];
-      document.getElementById('coord-y').value = wowheadCoords[1];
-    });
-
-    function toggleDead(index) {
-      allRaidData[currentRaidId][index].isDead = !allRaidData[currentRaidId][index].isDead;
-      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-      renderMarkers();
-    }
-
+    // --- 6. ADMIN UTILITIES ---
+    function toggleDead(index) { allRaidData[currentRaidId][index].isDead = !allRaidData[currentRaidId][index].isDead; localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); renderMarkers(); }
     function loadEdit(index) {
       const mob = allRaidData[currentRaidId][index];
-      document.getElementById('mob-name').value = mob.name;
-      document.getElementById('mob-type').value = mob.type;
-      document.getElementById('coord-x').value = mob.x;
-      document.getElementById('coord-y').value = mob.y;
-      document.getElementById('mob-notes').value = mob.notes;
-
+      document.getElementById('mob-name').value = mob.name; document.getElementById('mob-type').value = mob.type; document.getElementById('coord-x').value = mob.x; document.getElementById('coord-y').value = mob.y; document.getElementById('mob-notes').value = mob.notes;
       editingIndex = index;
-      const saveBtn = document.getElementById('save-btn');
-      saveBtn.textContent = "Update Map";
-      saveBtn.style.background = "#b8860b";
-      document.getElementById('cancel-btn').style.display = "block";
+      document.getElementById('save-btn').textContent = "Update Map"; document.getElementById('save-btn').style.background = "#b8860b"; document.getElementById('cancel-btn').style.display = "block";
       map.closePopup();
+      document.getElementById('admin-panel').style.display = 'block'; 
     }
-
-    function cancelEdit() {
-      editingIndex = null;
-      document.getElementById('save-btn').textContent = "Add to Map";
-      document.getElementById('save-btn').style.background = "#553311";
-      document.getElementById('cancel-btn').style.display = "none";
-      document.getElementById('mob-notes').value = '';
-    }
-
+    function cancelEdit() { editingIndex = null; document.getElementById('save-btn').textContent = "Add to Map"; document.getElementById('save-btn').style.background = "#553311"; document.getElementById('cancel-btn').style.display = "none"; document.getElementById('mob-notes').value = ''; }
     function saveMob() {
-      const name = document.getElementById('mob-name').value.trim();
-      const type = document.getElementById('mob-type').value;
-      const x = parseFloat(document.getElementById('coord-x').value);
-      const y = parseFloat(document.getElementById('coord-y').value);
-      const notes = document.getElementById('mob-notes').value;
-
+      const name = document.getElementById('mob-name').value.trim(), type = document.getElementById('mob-type').value, x = parseFloat(document.getElementById('coord-x').value), y = parseFloat(document.getElementById('coord-y').value), notes = document.getElementById('mob-notes').value;
       if (!name || isNaN(x) || isNaN(y)) { alert("Please enter a name and valid coordinates."); return; }
-
       if (editingIndex !== null) {
-        const currentDeadStatus = allRaidData[currentRaidId][editingIndex].isDead;
-        allRaidData[currentRaidId][editingIndex] = { name, type, x, y, notes, isDead: currentDeadStatus };
+        allRaidData[currentRaidId][editingIndex] = { name, type, x, y, notes, isDead: allRaidData[currentRaidId][editingIndex].isDead };
         cancelEdit();
-      } else {
-        allRaidData[currentRaidId].push({ name, type, x, y, notes, isDead: false });
-      }
-
-      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-      document.getElementById('mob-notes').value = '';
-      renderMarkers();
+      } else { allRaidData[currentRaidId].push({ name, type, x, y, notes, isDead: false }); }
+      localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); document.getElementById('mob-notes').value = ''; renderMarkers();
     }
-
-    function deleteMob(index) {
-      if(confirm("Are you sure you want to delete this mob?")) {
-        allRaidData[currentRaidId].splice(index, 1);
-        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-        if(editingIndex === index) cancelEdit();
-        renderMarkers();
-      }
-    }
-
-    function clearData() {
-      if(confirm(`Are you sure you want to clear all local changes for ${raids[currentRaidId].name}?`)) {
-        allRaidData[currentRaidId] = [];
-        localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-        renderMarkers();
-      }
-    }
-
-    // --- 7. IMPORT / EXPORT LOGIC ---
-    function exportData() {
-      const raidData = allRaidData[currentRaidId] || [];
-      const dataStr = JSON.stringify(raidData, null, 2);
-      const blob = new Blob([dataStr], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${currentRaidId}_mobs.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
+    function deleteMob(index) { if(confirm("Are you sure you want to delete this mob?")) { allRaidData[currentRaidId].splice(index, 1); localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); if(editingIndex === index) cancelEdit(); renderMarkers(); } }
+    function clearData() { if(confirm(`Are you sure you want to clear all local changes for ${raids[currentRaidId].name}?`)) { allRaidData[currentRaidId] = []; localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); renderMarkers(); } }
+    function exportData() { const blob = new Blob([JSON.stringify(allRaidData[currentRaidId] || [], null, 2)], { type: "application/json" }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${currentRaidId}_mobs.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
     function importData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
+      const file = event.target.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const importedData = JSON.parse(e.target.result);
-          if (!Array.isArray(importedData)) {
-            alert("Invalid file format. Please upload a valid JSON file exported from this tool.");
-            return;
-          }
-
-          if(confirm(`Are you sure you want to overwrite your map for ${raids[currentRaidId].name} with this file?`)) {
-            allRaidData[currentRaidId] = importedData;
-            localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData));
-            renderMarkers();
-            alert(`Successfully imported ${importedData.length} mobs to ${raids[currentRaidId].name}!`);
-          }
-        } catch (error) {
-          alert("Error reading JSON file.");
-        }
+          if (!Array.isArray(importedData)) { alert("Invalid file format."); return; }
+          if(confirm(`Overwrite your map for ${raids[currentRaidId].name} with this file?`)) { allRaidData[currentRaidId] = importedData; localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); renderMarkers(); }
+        } catch (error) { alert("Error reading JSON file."); }
         event.target.value = '';
       };
       reader.readAsText(file);
     }
 
-    // --- 8. INITIALIZE ---
+    // --- 7. INITIALIZE ---
     switchRaid(); 
   </script>
 </body>
