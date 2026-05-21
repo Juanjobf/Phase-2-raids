@@ -148,7 +148,8 @@
     <button id="btn-draw-green" onclick="setTool('draw-green')" style="color:lime;">✏️ Green</button>
     <div style="border-left: 2px solid #553311; margin: 0 5px;"></div>
     <button id="btn-number" onclick="setTool('number')" style="color:#f8b700;">🔢 Numbers</button>
-    <button onclick="clearDrawings()" style="color:#aaa;">🗑️ Clear Ink</button>
+    <button id="btn-eraser" onclick="setTool('eraser')" style="color:#ffb6c1;">🧽 Eraser</button>
+    <button onclick="clearDrawings()" style="color:#aaa;">🗑️ Clear All Ink</button>
   </div>
 
   <div id="map"></div>
@@ -257,7 +258,17 @@
     let currentPolyline = null;
     let numberCounter = 1;
 
-    // Toggles the drawing tools AND makes the circles ghosted so popups don't trigger!
+    // Checks remaining markers and sets the counter to the highest missing value
+    function recalculateNumberCounter() {
+      let maxNum = 0;
+      drawnLayers.eachLayer(function(layer) {
+        if (layer.numberValue && layer.numberValue > maxNum) {
+          maxNum = layer.numberValue;
+        }
+      });
+      numberCounter = maxNum + 1;
+    }
+
     function setTool(tool) {
       if (activeTool === tool) {
         activeTool = null; 
@@ -276,7 +287,6 @@
         map.dragging.enable();
       }
 
-      // Re-render markers instantly applies the "ghosting" interactive rules
       renderMarkers();
     }
 
@@ -293,7 +303,13 @@
       if (activeTool === 'draw-blue') color = '#00ffff';
       if (activeTool === 'draw-green') color = 'lime';
       
-      currentPolyline = L.polyline([e.latlng], {color: color, weight: 4, smoothFactor: 1}).addTo(drawnLayers);
+      currentPolyline = L.polyline([e.latlng], {color: color, weight: 4, smoothFactor: 1, interactive: true}).addTo(drawnLayers);
+
+      currentPolyline.on('click', function(ev) {
+        if (activeTool === 'eraser') {
+          drawnLayers.removeLayer(this);
+        }
+      });
     });
 
     map.on('mousemove', function(e) {
@@ -308,14 +324,27 @@
 
     map.on('click', function(e) {
       if (activeTool === 'number') {
+        let currentNum = numberCounter; // Capture the current number to store on the marker
         let icon = L.divIcon({
           className: 'number-icon',
-          html: `<div style="background:red; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-weight:bold; border: 2px solid white; box-shadow: 0 0 4px #000;">${numberCounter}</div>`,
-          iconSize: [28, 28],
-          iconAnchor: [14, 14]
+          html: `<div style="background:red; color:white; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px; border: 2px solid white; box-shadow: 0 0 4px #000;">${currentNum}</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
         });
-        L.marker(e.latlng, {icon: icon, interactive: false}).addTo(drawnLayers);
+        
+        let marker = L.marker(e.latlng, {icon: icon, interactive: true}).addTo(drawnLayers);
+        marker.numberValue = currentNum; // Store value for intelligent eraser recalculation
+        
+        marker.on('click', function(ev) {
+          if (activeTool === 'eraser') {
+            drawnLayers.removeLayer(this);
+            recalculateNumberCounter(); // Recalculate counter seamlessly!
+          }
+        });
+
         numberCounter++;
+      } else if (activeTool === 'eraser') {
+        // Handled by the layer's internal click event
       } else if (!activeTool) {
         const wowheadCoords = leafletToWowhead(e.latlng.lat, e.latlng.lng);
         document.getElementById('coord-x').value = wowheadCoords[0];
@@ -463,14 +492,14 @@
 
     document.addEventListener('keyup', function(e) {
       if (e.key === 'Control' || e.key === 'Shift') { 
-        if (activeTool) return; // Don't interrupt hotkeys if drawing
+        if (activeTool) return; 
         refreshAllMarkersState(); 
         clearAllMapHighlights(); 
       }
     });
 
     function highlightMobsGroup(targetName, triggerCircle) {
-      if (activeTool) return; // Safegaurd to stop tooltips if drawing
+      if (activeTool) return; 
       currentMapCircles.forEach(item => {
         if (item.name === targetName) {
           item.circle.setRadius(item.baseRadius + 4);
@@ -487,7 +516,6 @@
       });
     }
 
-    // List Hover - Specifically excludes opening tooltips
     function highlightRequirementByIndex(index) {
       if (activeTool) return;
       const req = killRequirements[currentRaidId][index];
@@ -570,10 +598,8 @@
         const coords = wowheadToLeaflet(mob.x, mob.y);
         const isReq = isMobRequired(mob.name, currentProgress);
         
-        // Setup base style
         let style = getCircleStyle(mob, isReq);
-        // CRITICAL UPDATE: If an active drawing tool is selected, force circles to ignore mouse events
-        style.interactive = !activeTool;
+        style.interactive = !activeTool; 
 
         const layer = (mob.type === 'boss') ? bossLayer : trashLayer;
         
@@ -608,7 +634,7 @@
         currentMapCircles.push({ name: mob.name, circle: circle, baseRadius: style.radius, index: index });
 
         circle.on('mouseover', function(e) {
-          if (activeTool) return; // Total fail-safe
+          if (activeTool) return; 
 
           let hotkeyActive = e.originalEvent.ctrlKey || e.originalEvent.shiftKey;
           let stateChanged = false;
@@ -660,7 +686,7 @@
       reader.onload = function(e) {
         try {
           const importedData = JSON.parse(e.target.result);
-          if (!Array.isArray(importedData)) { alert("Invalid file format."); return; }
+          if (!Array.isArray(importedData)) { alert("Invalid file format. Please upload a valid JSON file exported from this tool."); return; }
           if(confirm(`Overwrite your map for ${raids[currentRaidId].name} with this file?`)) { allRaidData[currentRaidId] = importedData; localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); renderMarkers(); }
         } catch (error) { alert("Error reading JSON file."); }
         event.target.value = '';
