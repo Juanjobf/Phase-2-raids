@@ -211,6 +211,7 @@
   <script>
     // --- 1. CONFIGURATION ---
     const raids = {
+      const raids = {
       "tempest-keep": { 
         name: "Tempest Keep", image: "tempest-keep-map.jpg", width: 1002, height: 668,
         mobs: [
@@ -222,6 +223,38 @@
         mobs: [
           "Hydross the Unstable", "The Lurker Below", "Leotheras the Blind", "Fathom-Lord Karathress", "Morogrim Tidewalker", "Lady Vashj", "Underbog Colossus", "Coilfang Shatterer", "Greyheart Tidecaller", "Coilfang Fathom-Witch", "Vashj'ir Honor Guard", "Tidewalker Depth-Seer", "Tidewalker Harpooner", "Tidewalker Hydromancer", "Tidewalker Shaman", "Tidewalker Warrior", "Tidewalker Lurker", "Greyheart Nether-Mage", "Greyheart Skulker", "Coilfang Priestess", "Coilfang Strider", "Coilfang Frenzy", "Coilfang Serpentguard", "Serpentshrine Sporebat", "Serpentshrine Lurker", "Tainted Water Elemental", "Pure Water Elemental", "Coilfang Hate-Screamer", "Coilfang Beast-Tamer", "Greyheart Technician", "Greyheart Shield-Bearer"
         ]
+      },
+      "bt-1": { 
+        name: "BT 1: Karabor Sewers", image: "1. Karabor Sewers.jpg", width: 1002, height: 668,
+        mobs: ["High Warlord Naj'entus", "Leviathan", "Aqueous Lord", "Coilskar Wrangler", "Coilskar General", "Aquaeous Spawn"]
+      },
+      "bt-2": { 
+        name: "BT 2: Training Grounds", image: "2. Illidari training grounds.jpg", width: 1002, height: 668,
+        mobs: ["Supremus", "Bonechewer Taskmaster", "Dragonmaw Wyrmcaller / Illidari Fearbringer", "Illidari Centurion / Ashtongue Mystic", "Illidari Boneslicer / Defiler / Heartseeker", "Illidari Nightlord"]
+      },
+      "bt-3": { 
+        name: "BT 3: Sanctuary of Shadows", image: "3. Sanctuary of Shadows.jpg", width: 1002, height: 668,
+        mobs: ["Shade of Akama", "Ashtongue Feral Spirit", "Ashtongue Primalist"]
+      },
+      "bt-4": { 
+        name: "BT 4: Halls of Anguish", image: "4. Halls of Anguish.jpg", width: 1002, height: 668,
+        mobs: ["Reliquary of Souls", "Hand of Gorefiend", "Bonechewer Behemoth", "Bonechewer Blade Fury", "Bonechewer Combatant"]
+      },
+      "bt-5": { 
+        name: "BT 5: Gorefiend's Vigil", image: "5. Gorefiend's Vigil.jpg", width: 1002, height: 668,
+        mobs: ["Teron Gorefiend", "Shadowmoon Champion", "Shadowmoon Houndmaster", "Shadowmoon Weapon Master / Wrathbone Flayer"]
+      },
+      "bt-6": { 
+        name: "BT 6: Den of Mortal Delights", image: "6. Den of Mortal Delights.jpg", width: 1002, height: 668,
+        mobs: ["Mother Shahraz", "Priestess of Torment", "Mistress of Dementia / Mistress of Woe", "Temple Acolyte / Charming Patron"]
+      },
+      "bt-7": { 
+        name: "BT 7: Chamber of Command", image: "7. Chamber of Command.jpg", width: 1002, height: 668,
+        mobs: ["The Illidari Council", "Promenade Sentinel", "Illidari Blood Lord"]
+      },
+      "bt-8": { 
+        name: "BT 8: Temple Summit", image: "8. Temple Summit.jpg", width: 1002, height: 668,
+        mobs: ["Illidan Stormrage"]
       }
     };
 
@@ -231,9 +264,47 @@
       ],
       "ssc": [
         { name: "Underbog Colossus", req: 6 }, { name: "Coilfang Shatterer", req: 14 }, { name: "Greyheart Tidecaller", req: 16 }, { name: "Coilfang Fathom-Witch", req: 6 }, { name: "Vashj'ir Honor Guard", req: 6 }, { name: "Tidewalker", matchPartial: true, exclude: ["Morogrim Tidewalker"], req: 20, displayName: "Tidewalker (Any)" } 
-      ]
+      ],
+      "bt-1": [
+        { name: "Leviathan", req: 2 },
+        { name: "Aqueous Lord", req: 3 },
+        { name: "Coilskar Wrangler", req: 4 },
+        { name: "Coilskar General", req: 2 },
+        { name: "Aquaeous Spawn", req: 14 }
+      ], 
+      "bt-2": [
+        { name: "Bonechewer Taskmaster", req: 1 },
+        { name: "Dragonmaw Wyrmcaller / Illidari Fearbringer", req: 6, displayName: "Wyrmcaller / Fearbringer" },
+        { name: "Illidari Centurion / Ashtongue Mystic", req: 10, displayName: "Centurion / Mystic" },
+        { name: "Illidari Boneslicer / Defiler / Heartseeker", req: 12, displayName: "Boneslicer / Defiler / Heartseeker" },
+        { name: "Illidari Nightlord", req: 2 }
+      ], 
+      "bt-3": [
+        { name: "Ashtongue Feral Spirit", req: 3 },
+        { name: "Ashtongue Primalist", req: 5 }
+      ], 
+      "bt-4": [
+        { name: "Hand of Gorefiend", req: 4 },
+        { name: "Bonechewer Behemoth", req: 4 },
+        { name: "Bonechewer Blade Fury", req: 6 },
+        { name: "Bonechewer Combatant", req: 2 }
+      ], 
+      "bt-5": [
+        { name: "Shadowmoon Champion", req: 6 },
+        { name: "Shadowmoon Houndmaster", req: 6 },
+        { name: "Shadowmoon Weapon Master / Wrathbone Flayer", req: 2, displayName: "Weapon Master / Flayer" }
+      ], 
+      "bt-6": [
+        { name: "Priestess of Torment", req: 5 },
+        { name: "Mistress of Dementia / Mistress of Woe", req: 4, displayName: "Mistress of Dementia / Woe" },
+        { name: "Temple Acolyte / Charming Patron", req: 71, displayName: "Acolyte / Patron" }
+      ], 
+      "bt-7": [
+        { name: "Promenade Sentinel", req: 4 },
+        { name: "Illidari Blood Lord", req: 4 }
+      ], 
+      "bt-8": []
     };
-
     let currentRaidId = "tempest-keep";
     let editingIndex = null;
     let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
