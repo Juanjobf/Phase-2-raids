@@ -743,7 +743,7 @@
       const name = document.getElementById('mob-name').value.trim(), type = document.getElementById('mob-type').value, x = parseFloat(document.getElementById('coord-x').value), y = parseFloat(document.getElementById('coord-y').value), notes = document.getElementById('mob-notes').value;
       if (!name || isNaN(x) || isNaN(y)) { alert("Please enter a name and valid coordinates."); return; }
       if (editingIndex !== null) {
-        allRaidData[currentRaidId][editingIndex] = { name, type, x, y, notes, isDead: allRaidData[currentRaidId][editingIndex].isDead };
+        allRaidData[currentRaidId][editingIndex] = { name, type, x, y, notes, is: allRaidData[currentRaidId][editingIndex].isDead };
         cancelEdit();
       } else { allRaidData[currentRaidId].push({ name, type, x, y, notes, isDead: false }); }
       localStorage.setItem('wowRaidMaps', JSON.stringify(allRaidData)); document.getElementById('mob-notes').value = ''; renderMarkers();
