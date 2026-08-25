@@ -211,7 +211,6 @@
   <script>
     // --- 1. CONFIGURATION ---
     const raids = {
-      const raids = {
       "tempest-keep": { 
         name: "Tempest Keep", image: "tempest-keep-map.jpg", width: 1002, height: 668,
         mobs: [
@@ -305,6 +304,7 @@
       ], 
       "bt-8": []
     };
+
     let currentRaidId = "tempest-keep";
     let editingIndex = null;
     let allRaidData = JSON.parse(localStorage.getItem('wowRaidMaps')) || {};
